@@ -1,0 +1,334 @@
+---
+title: "Plant Genomes"
+output: 
+  flexdashboard::flex_dashboard:
+    css: styles.css
+    orientation: rows
+    vertical_layout: scroll
+    source_code: "https://github.com/almeidasilvaf/plantgenomes"
+    theme:
+        version: 4
+        bootswatch: minty
+        navbar-bg: "#276c4c" # darkgreen
+        base_font: 
+          google: Fraunces
+        heading_font:
+          google: Fraunces
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(here)
+library(tidyverse)
+library(ggiraph)
+library(DT)
+metadata <- readr::read_tsv(
+    here("data", "nature_plants_data.txt"), show_col_types = FALSE
+)
+options(htmlwidgets.TOJSON_ARGS = list(na = 'string'))
+```
+
+# Overview
+
+## Row 1
+
+### Number of species with sequenced genomes per taxa {data-width=600}
+
+```{r species_per_taxa, dpi = 200, fig.width = 9, fig.height = 9.5}
+cols <- ggsci::pal_aaas()(10)
+count_taxa <- function(metadata = NULL, taxon = NULL) {
+  count_df <- metadata %>%
+    count(.data[[taxon]]) %>%
+    drop_na() %>%
+    pivot_longer(.data[[taxon]])
+  names(count_df) <- c("n", "taxon", "name")
+  return(count_df)
+}
+freqs <- bind_rows(
+  count_taxa(metadata, "Phylum"),
+  count_taxa(metadata, "Class"),
+  count_taxa(metadata, "Order"),
+  count_taxa(metadata, "Family"),
+  count_taxa(metadata, "Genus")
+)
+
+size <- 3.3
+
+p_phylum <- freqs %>%
+  dplyr::filter(taxon == "Phylum") %>%
+  ggplot(., aes(x = n, y = reorder(name, n))) +
+  geom_col(fill = cols[1], color = "grey10") +
+  geom_text(aes(label = n), hjust = -0.3, size = size) +
+  xlim(0, 1000) +
+  labs(x = "", y = "", title  = "Phylum") +
+  theme_bw()
+
+p_class <- freqs %>%
+  dplyr::filter(taxon == "Class") %>%
+  mutate(name = str_replace(name, "Marchantiopsida.*", "Marchantiopsida")) %>%
+  ggplot(., aes(x = n, y = reorder(name, n))) +
+  geom_col(fill = cols[2], color = "grey10") +
+  geom_text(aes(label = n), hjust = -0.3, size = size) +
+  xlim(0, 1000) +
+  labs(x = "", y = "", title = "Class") +
+  theme_bw()
+
+p_order <- freqs %>%
+  dplyr::filter(taxon == "Order" & n > 1) %>%
+  ggplot(., aes(x = n, y = reorder(name, n))) +
+  geom_col(fill = cols[3], color = "grey10") +
+  geom_text(aes(label = n), hjust = -0.3, size = size) +
+  xlim(0, 100) +
+  labs(
+    x = "", y = "",
+    title = "Order",
+    subtitle = "2 species minimum"
+  ) +
+  theme_bw()
+
+p_family <- freqs %>%
+  dplyr::filter(taxon == "Family" & n > 1) %>%
+  ggplot(., aes(x = n, y = reorder(name, n))) +
+  geom_col(fill = cols[4], color = "grey10") +
+  geom_text(aes(label = n), hjust = -0.3, size = size) +
+  xlim(0, 100) +
+  labs(
+    x = "", y = "",
+    title = "Family",
+    subtitle = "2 species minimum"
+  ) +
+  theme_bw()
+
+taxa_freqs <- patchwork::wrap_plots(
+  patchwork::wrap_plots(p_phylum, p_class, heights = c(1, 3)),
+  p_order, p_family,
+  ncol = 3, widths = c(1, 1.5)
+)
+taxa_freqs
+```
+
+### Complete BUSCOs across families {data-width=400}
+
+```{r buscos_families, dpi = 300, fig.height = 8, fig.width = 4}
+family_1genome <- metadata %>%
+  dplyr::rename(Complete_BUSCO = `BUSCO % complete (combined)`) %>%
+  dplyr::select(Family, Complete_BUSCO) %>%
+  drop_na() %>%
+  count(Family) %>%
+  filter(n < 2)
+  
+
+busco_data <- metadata %>% 
+  dplyr::rename(Complete_BUSCO = `BUSCO % complete (combined)`) %>%
+  dplyr::select(Family, Complete_BUSCO) %>%
+  filter(!Family %in% family_1genome$Family) %>%
+  drop_na() %>%
+  mutate(Complete_BUSCO = str_replace_all(
+    Complete_BUSCO, 
+    c("," = "\\.",
+      "%" = ""
+    ))
+  ) %>%
+  mutate(Complete_BUSCO = as.numeric(Complete_BUSCO)) %>%
+  group_by(Family) %>%
+  mutate(mean_busco = mean(Complete_BUSCO)) %>%
+  ungroup()
+
+mean_busco <- mean(busco_data$mean_busco)
+
+p_busco <- busco_data %>%
+  ggplot(., aes(y = reorder(Family, mean_busco), x = Complete_BUSCO)) +
+  geom_boxplot(
+    width = .25, 
+    outlier.color = "brown"
+  ) +
+  geom_point(
+    size = 1.3,
+    alpha = .3,
+    position = position_jitter(
+      seed = 1, width = .1
+    )
+  ) + 
+  geom_vline(xintercept = mean_busco, color = "dodgerblue3", linetype = "dashed") +
+  annotate("text", 
+           x = mean_busco - 15, y = "Linaceae",
+           label = "Mean", 
+           color = "dodgerblue4", fontface = "bold", size = 3.5
+  ) +
+  annotate(
+    geom = "curve",
+    x = mean_busco - 15, y = 56,
+    xend = mean_busco - 2, yend = 54,
+    curvature = .3, arrow = arrow(length = unit(2, "mm")),
+    color = "dodgerblue4"
+  ) +
+  annotate(
+    "text", 
+    x = 20, y = "Campanulaceae",
+    label = "Outliers", 
+    color = "brown", fontface = "bold", size = 3.5
+  ) +
+  annotate(
+    geom = "curve",
+    x = c(18, 22), y = c(52, 52),
+    xend = c(3, 13.5), yend = c(49, 37.5),
+    curvature = -0.2, arrow = arrow(length = unit(2, "mm")),
+    color = "brown"
+  ) +
+  theme_bw() +
+  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(x = "", y = "")
+
+p_busco
+```
+
+## Row 2
+
+### Species-level information {data-width=900}
+
+```{r}
+species_table <- metadata %>%
+  mutate(Species = str_c(Genus, species, sep = " ")) %>%
+  dplyr::select(
+    Family, Species, `Number of genomes for the species`,
+    `BUSCO % complete (combined)`, `Estimated genome size`,
+    `Sequencing technology`, `Ploidy number`, `Domestication status`
+    ) %>%
+  dplyr::rename(
+    N_genomes = `Number of genomes for the species`,
+    Complete_BUSCOs = `BUSCO % complete (combined)`,
+    Genome_size = `Estimated genome size`,
+    Sequencing_technology = `Sequencing technology`,
+    Ploidy = `Ploidy number`,
+    Domestication = `Domestication status`
+    ) %>%
+  mutate(Complete_BUSCOs = str_replace_all(
+    Complete_BUSCOs, 
+    c("," = "\\.",
+      "%" = ""
+    ))
+  ) %>%
+  mutate(Complete_BUSCOs = as.numeric(Complete_BUSCOs)) %>%
+  mutate(Genome_size = Genome_size / 10^6) %>%
+  mutate(Ploidy = as.factor(str_c(Ploidy, "n", sep = ""))) %>%
+  arrange(Family, -Complete_BUSCOs) %>%
+  mutate(Family = as.factor(Family)) %>%
+  mutate(Domestication = as.factor(Domestication))
+  
+DT::datatable(
+  species_table,
+  colnames = c("Family", "Species", "N genomes", "Complete BUSCOs (%)",
+               "Genome size (Mb)", "Technology", "Ploidy", "Domestication"),
+  selection = "single",
+  rownames = FALSE,
+  filter = 'top',
+  options = list(
+    lengthMenu = c(10, 20, 30, 40),
+    pageLength = 10,
+    scrollX = TRUE,
+    scrollY = TRUE,
+    columnDefs = list(
+      list(width = '50px', targets = 2),
+      list(width = '50px', targets = 3),
+      list(width = '50px', targets = 4),
+      list(width = '50px', targets = 6)
+    )
+  )
+) %>%
+  DT::formatStyle(columns = 1:8, 
+                  fontSize = '13px') %>%
+  DT::formatRound(5, 1)
+```
+
+# Polyploid genomes
+
+## Row
+
+### Plant genomes and their ploidy levels {data-width=600}
+
+```{r genomes_and_ploidy, dpi = 200, fig.width = 7, fig.height=5}
+triploids <- metadata %>% 
+  filter(`Ploidy number` == 3) %>%
+  mutate(Species = str_c(Genus, species, sep = " ")) %>%
+  dplyr::select(Species)
+  
+tetraploids <- metadata %>% 
+  filter(`Ploidy number` == 4) %>%
+  mutate(Species = str_c(Genus, species, sep = " ")) %>%
+  dplyr::select(Species)
+
+hexaploids <- metadata %>% 
+  filter(`Ploidy number` == 6) %>%
+  mutate(Species = str_c(Genus, species, sep = " ")) %>%
+  dplyr::select(Species)
+
+octaploids <- metadata %>% 
+  filter(`Ploidy number` == 8) %>%
+  mutate(Species = str_c(Genus, species, sep = " ")) %>%
+  dplyr::select(Species)
+
+cols <- ggsci::pal_jama()(5)
+p_ploidy <- metadata %>%
+  count(`Ploidy number`) %>%
+  drop_na() %>%
+  mutate(`Ploidy number` = str_c(`Ploidy number`, "n", sep = "")) %>%
+  ggplot(., aes(y = `Ploidy number`, x = n)) +
+  geom_col(aes(fill = `Ploidy number`), color = "black",
+           show.legend = FALSE) +
+  ggsci::scale_fill_jama() +
+  geom_text(aes(label = n), hjust = -0.3) +
+  labs(y = "", x = "Species frequency") +
+  xlim(0, 250) +
+  theme_bw() +
+  annotate(
+    "text", 
+    x = 130, y = "8n",
+    label = knitr::combine_words(octaploids$Species),
+    color = colorspace::darken(cols[5], 0.5), fontface = "bold.italic"
+  ) +
+  annotate(
+    "text", 
+    x = 95, y = "6n",
+    label = "Dioscorea cayenensis, Actinidia eriantha,\nTriticum aestivum, and Sequoia sempervirens",
+    color = colorspace::darken(cols[4], 0.5), fontface = "bold.italic"
+  ) +
+  annotate(
+    "text", 
+    x = 45, y = "3n",
+    label = knitr::combine_words(triploids$Species), 
+    color = colorspace::darken(cols[2], 0.5), fontface = "bold.italic"
+  )
+  
+
+p_ploidy
+```
+
+
+### Tetraploids and their families {data-width=400}
+
+```{r tetraploids_and_families, dpi = 200}
+tetra_families_and_species <- metadata %>%
+    filter(`Ploidy number` == 4) %>%
+    mutate(Species = str_c(Genus, species, sep = " ")) %>%
+    group_by(Family) %>%
+    summarise(Inc_species = str_c(Species, collapse = "\n")) %>%
+    ungroup()
+
+p <- metadata %>%
+  filter(`Ploidy number` == 4) %>%
+  count(Family) %>%
+  inner_join(., tetra_families_and_species) %>%
+  ggplot(., aes(x = reorder(`Family`, n), y = n,
+                tooltip = Inc_species,
+                data_id = reorder(`Family`, n))) +
+  geom_col_interactive(fill = "gray40", color = "black") +
+  geom_text(aes(label = n), hjust = -0.3) +
+  labs(y = "Species frequency", x = "") +
+  #ylim(0, 10) +
+  theme_bw() +
+  coord_flip()
+
+x <- ggiraph::ggiraph(code = {print(p)}, height_svg = 6.5)
+x
+```
+

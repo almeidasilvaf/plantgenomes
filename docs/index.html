@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<title>Plant Genomes</title>
+
+<meta property="og:title" content="Plant Genomes" />
+
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+
+<link rel="icon" href="data:image/x-icon;" type="image/x-icon">
+
+
+<script type="text/javascript">
+window.FlexDashboardComponents = [];
+</script>
+
+<script id="flexdashboard-navbar" type="application/json">
+[{"title":"Source Code","icon":"fa-github","href":"https://github.com/almeidasilvaf/plantgenomes","align":"right"}]
+</script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fraunces-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.20/datatables.js"></script>
+<link href="site_libs/dt-core-bootstrap4-1.11.3/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-bootstrap4-1.11.3/css/dataTables.bootstrap4.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-bootstrap4-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/dt-core-bootstrap4-1.11.3/js/dataTables.bootstrap4.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<script src="site_libs/d3-bundle-5.16.0/d3-bundle.min.js"></script>
+<script src="site_libs/d3-lasso-0.0.5/d3-lasso.min.js"></script>
+<script src="site_libs/save-svg-as-png-1.4.17/save-svg-as-png.min.js"></script>
+<link href="site_libs/ggiraphjs-0.4.2/ggiraphjs.min.css" rel="stylesheet" />
+<script src="site_libs/ggiraphjs-0.4.2/ggiraphjs.min.js"></script>
+<script src="site_libs/girafe-binding-0.8.1/girafe.js"></script>
+<style type="text/css">
+
+/*
+ Dashboard CSS from Keen IO Dashboards
+ (https://github.com/keen/dashboards)
+*/
+
+body {
+  background: #f2f2f2;
+  padding: 60px 0 0 8px; /* padding-top overridden by theme */
+}
+
+body hr {
+  border-color: #d7d7d7;
+  margin: 10px 0;
+}
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar .navbar-brand {
+  text-decoration: none;
+}
+
+.navbar-logo {
+  margin-top: 1px;
+}
+
+.navbar-logo img {
+  margin-right: 12px;
+}
+
+.navbar-author {
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.navbar .dropdown-menu .fa {
+  min-width: 20px;
+}
+
+.navbar .dropdown-menu {
+  min-width: 150px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.chart-wrapper,
+.nav-tabs-custom,
+.sbframe-commentary
+{
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 7px 10px 4px;
+}
+
+.chart-wrapper .chart-title:empty {
+  display: none;
+}
+
+.chart-wrapper .chart-stage {
+  overflow: hidden;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chart-wrapper .chart-notes {
+  background: #fbfbfb;
+  border-top: 1px solid #e2e2e2;
+  color: #808080;
+  font-size: 12px;
+  padding: 8px 10px 5px;
+}
+
+/*
+ CSS for handling flexbox layout
+*/
+
+#dashboard-container {
+  visibility: hidden;
+}
+
+.tab-content>.dashboard-page-wrapper.active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.dashboard-page-wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-row-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.dashboard-column-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-column {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-wrapper-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-stage-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  position: relative;
+}
+
+.chart-shim {
+  position: absolute;
+  left: 8px; top: 8px; right: 8px; bottom: 8px;
+}
+
+.no-padding .chart-shim {
+  left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.flowing-content-shim {
+  overflow: auto;
+  left: 0; top: 0; right: 0; bottom: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.flowing-content-container {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.chart-stage .table-bordered {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > th,
+.chart-stage .table-bordered > tfoot > tr > th,
+.chart-stage .table-bordered > tbody > tr > td,
+.chart-stage .table-bordered > tfoot > tr > td {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > td {
+  border-top: 1px solid #dddddd;
+}
+
+.chart-stage .table-bordered > thead > tr > th {
+  border: none;
+  border-bottom: 2px solid #dddddd;
+}
+
+.bootstrap-table table>thead {
+  background-color: #fff;
+}
+
+.bootstrap-table table.data,
+.bootstrap-table table.shiny-table {
+  width: inherit !important;
+}
+
+.bootstrap-table table.data>tbody>tr>th,
+.bootstrap-table table.shiny-table>tbody>tr>th {
+  border-top: none;
+  border-bottom: 2px solid #dddddd;
+  padding: 5px;
+}
+
+.bootstrap-table .data td[align=right] {
+  font-family: inherit;
+}
+
+.chart-wrapper form {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.shiny-input-container label {
+  font-weight: normal;
+}
+
+.chart-stage .html-widget {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .html-widget-static-bound {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .shiny-bound-output {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Omit display of empty paragraphs */
+
+.chart-shim>p:empty {
+  display: none;
+}
+
+.chart-stage>p:empty {
+  display: none;
+}
+
+/* Omit display of special knitr options div*/
+
+.chart-stage .knitr-options {
+  display: none;
+}
+
+/* Automatically resizing images */
+
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+}
+
+.image-container img {
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* Value box */
+
+.value-box {
+  border-radius: 2px;
+  position: relative;
+  display: block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.value-box > .inner {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.value-box .value {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.value-box .caption {
+  font-size: 15px;
+}
+.value-box .caption > small {
+  display: block;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.value-box .icon i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.linked-value:hover {
+  cursor: pointer;
+}
+
+.value-box.linked-value:hover {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* STORYBOARD */
+
+.storyboard-nav button {
+  background: transparent;
+  border: 0;
+  opacity: .3;
+  outline: none;
+  padding: 0;
+}
+
+.storyboard-nav button:hover,
+.storyboard-nav button:hover {
+  opacity: .5;
+}
+
+.storyboard-nav button:disabled,
+.storyboard-nav button:disabled {
+  opacity: .1;
+}
+
+.storyboard-nav .sbnext,
+.storyboard-nav .sbprev {
+  float: left;
+  width: 2%;
+  height: 120px;
+  font-size: 50px;
+}
+
+.storyboard-nav .sbprev {
+  text-align: left;
+  width: 2%;
+}
+
+.storyboard-nav .sbnext {
+  float: right;
+  text-align: right;
+  margin-right: 8px;
+}
+
+.storyboard-nav .sbframelist {
+  margin: 0 auto;
+  width: 94%;
+  height: 120px;
+  overflow: hidden;
+  text-shadow: none;
+  margin-bottom: 8px;
+}
+
+.storyboard-nav .sbframelist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.storyboard-nav .sbframelist ul li {
+  float: left;
+  width: 270px;
+  height: 100%;
+  padding: 10px 10px 10px 10px;
+  margin-right: 8px;
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  color: #3a3c47;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.storyboard-nav .sbframelist ul li:last-child {
+  margin-right: 0px;
+}
+
+.storyboard-nav .sbframelist ul li.active {
+  color: #fff;
+  background: #B8B8B8;
+}
+
+.sbframe-commentary {
+  width: 300px;
+  background: #fbfbfb;
+  font-size: 14px;
+}
+
+.sbframe-commentary ul {
+  padding-left: 22px;
+}
+
+.sbframe.active {
+  display: flex;
+}
+
+.sbframe:not(.active) {
+  display: none;
+}
+
+/* NAV TABS */
+
+.nav-tabs-custom > .nav-tabs {
+  margin: 0;
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+.nav-tabs-custom > .nav-tabs > li {
+  border-top: 3px solid transparent;
+  margin-bottom: -1px;
+  margin-right: 5px;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:active {
+  color: #666;
+  font-weight: 300;
+  font-size: 14px;
+  border-radius: 0;
+  padding: 3px 10px 5px;
+  text-transform: none;
+}
+
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a {
+  border-bottom-color: transparent;
+}
+
+.nav-tabs-custom > .nav-tabs > li > a.text-muted {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  background: transparent;
+  margin: 0;
+}
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:hover,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:focus,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:active {
+  border-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: #3c8dbc;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a,
+.nav-tabs-custom > .nav-tabs > li.active:hover > a {
+  background-color: #fff;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a {
+  border-top-color: transparent;
+  border-left-color: #d7d7d7;
+  border-right-color: #d7d7d7;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type {
+  margin-left: 0;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type.active > a {
+  border-left-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs.pull-right {
+  float: none !important;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li {
+  float: right;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type {
+  margin-right: 0;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type > a {
+  border-left-width: 1px;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type.active > a {
+  border-left-color: #d7d7d7;
+  border-right-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.header {
+  line-height: 35px;
+  padding: 0 10px;
+  font-size: 20px;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.header > .fa,
+.nav-tabs-custom > .nav-tabs > li.header > .glyphicon,
+.nav-tabs-custom > .nav-tabs > li.header > .ion {
+  margin-right: 5px;
+}
+.nav-tabs-custom > .tab-content {
+  background: #fff;
+  padding: 0;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom > .tab-content > .chart-wrapper {
+  background: #fff;
+  border: none;
+  margin: 0;
+}
+
+
+.nav-tabs-custom > .tab-content > .active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom .dropdown.open > a:active,
+.nav-tabs-custom .dropdown.open > a:focus {
+  background: transparent;
+  color: #999;
+}
+
+
+@media (max-width: 767px) {
+  .value-box {
+    text-align: center;
+    margin-right: 8px;
+  }
+  .value-box .icon {
+    display: none;
+  }
+}
+
+/* Fixed position sidebar */
+
+.section.sidebar {
+  position: fixed;
+  top: 51px; /* overridden by theme */
+  left: 0;
+  bottom: 0;
+  border-right: 1px solid #e2e2e2;
+  background-color: white; /* overridden by theme */
+  padding-left: 10px;
+  padding-right: 10px;
+  visibility: hidden;
+  overflow: auto;
+}
+
+.section.sidebar form p:first-child {
+  margin-top: 10px;
+}
+
+/* Embedded source code */
+
+#flexdashboard-source-code {
+  display: none;
+}
+
+.featherlight-content #flexdashboard-source-code {
+  display: inline-block;
+}
+
+.featherlight-content {
+  width: 80%;
+  max-width: 800px;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.featherlight:last-of-type {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.featherlight-inner {
+  width: 100%;
+}
+
+.featherlight-content pre {
+  margin: 0;
+  border: 0;
+  background: #fff;
+  font-size: 12px;
+}
+
+.unselectable {
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+#flexdashboard-source-code code {
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+
+/* DataTables Tweaks */
+
+.dataTables_filter input[type="search"] {
+  -webkit-appearance: searchfield;
+  outline: none;
+}
+
+.dataTables_wrapper.no-footer
+.dataTables_info {
+  padding-top: 0;
+}
+
+
+table.dataTable thead th {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+/* Mobile phone only CSS */
+
+.desktop-layout div.section.mobile {
+  display: none;
+}
+
+.mobile-layout div.section.no-mobile {
+  display: none;
+}
+
+.mobile-figure {
+  display: none;
+}
+
+
+
+</style>
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container-fluid">
+<div class="navbar-header">
+
+<button id="navbar-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+
+<span class="navbar-logo pull-left">
+  
+</span>
+<span class="navbar-brand">
+  Plant Genomes
+  <span class="navbar-author">
+        </span>
+</span>
+
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+<ul class="nav navbar-nav navbar-left">
+</ul>
+<ul class="nav navbar-nav navbar-right">
+</ul>
+</div><!--/.nav-collapse-->
+</div><!--/.container-->
+</div><!--/.navbar-->
+
+<img class="mobile-figure" data-mobile-figure-id=fig1 src="index_files/figure-html/species_per_taxa-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig2 src="index_files/figure-html/buscos_families-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig3 src="index_files/figure-html/genomes_and_ploidy-1.mb.png" />
+<script type="text/javascript">
+
+
+var FlexDashboard = (function () {
+
+  // initialize options
+  var _options = {};
+
+  var FlexDashboard = function() {
+
+    // default options
+    _options = $.extend(_options, {
+      theme: "cosmo",
+      fillPage: false,
+      orientation: 'columns',
+      storyboard: false,
+      defaultFigWidth: 576,
+      defaultFigHeight: 461,
+      defaultFigWidthMobile: 360,
+      defaultFigHeightMobile: 461,
+      isMobile: false,
+      isPortrait: false,
+      resize_reload: true
+    });
+  };
+
+  function init(options) {
+
+    // extend default options
+    $.extend(true, _options, options);
+
+    // add ids to sections that don't have them (pandoc won't assign ids
+    // to e.g. sections with titles consisting of only chinese characters)
+    var nextId = 1;
+    $('.level1:not([id]),.level2:not([id]),.level3:not([id])').each(function() {
+      $(this).attr('id', 'dashboard-' + nextId++);
+    });
+
+    // find navbar items
+    var navbarItems = $('#flexdashboard-navbar');
+    if (navbarItems.length)
+      navbarItems = JSON.parse(navbarItems.html());
+    addNavbarItems(navbarItems);
+
+    // find the main dashboard container
+    var dashboardContainer = $('#dashboard-container');
+
+    // resolve mobile classes
+    resolveMobileClasses(dashboardContainer);
+
+    // one time global initialization for components
+    componentsInit(dashboardContainer);
+
+    // look for a global sidebar
+    var globalSidebar = dashboardContainer.find(".section.level1.sidebar");
+    if (globalSidebar.length > 0) {
+
+      // global layout for fullscreen displays
+      if (!isMobilePhone()) {
+
+         // hoist it up to the top level
+         globalSidebar.insertBefore(dashboardContainer);
+
+         // lay it out (set width/positions)
+         layoutSidebar(globalSidebar, dashboardContainer);
+
+      // tuck sidebar into first page for mobile phones
+      } else {
+
+        // convert it into a level3 section
+        globalSidebar.removeClass('sidebar');
+        globalSidebar.removeClass('level1');
+        globalSidebar.addClass('level3');
+        var h1 = globalSidebar.children('h1');
+        var h3 = $('<h3></h3>');
+        h3.append(h1.contents());
+        h3.insertBefore(h1);
+        h1.detach();
+
+        // move it into the first page
+        var page = dashboardContainer.find('.section.level1').first();
+        if (page.length > 0)
+          page.prepend(globalSidebar);
+      }
+    }
+
+    // look for pages to layout
+    var pages = $('div.section.level1');
+    if (pages.length > 0) {
+
+        // find the navbar and collapse on clicked
+        var navbar = $('#navbar');
+        navbar.on("click", "a[data-toggle!=dropdown]", null, function () {
+           navbar.collapse('hide');
+        });
+
+        // envelop the dashboard container in a tab content div
+        dashboardContainer.wrapInner('<div class="tab-content"></div>');
+
+        pages.each(function(index) {
+
+          // lay it out
+          layoutDashboardPage($(this));
+
+          // add it to the navbar
+          addToNavbar($(this), index === 0);
+
+        });
+
+    } else {
+
+      // remove the navbar and navbar button if we don't
+      // have any navbuttons
+      if (navbarItems.length === 0) {
+        $('#navbar').remove();
+        $('#navbar-button').remove();
+      }
+
+      // add the storyboard class if requested
+      if (_options.storyboard)
+        dashboardContainer.addClass('storyboard');
+
+      // layout the entire page
+      layoutDashboardPage(dashboardContainer);
+    }
+
+    // if we are in shiny we need to trigger a window resize event to
+    // force correct layout of shiny-bound-output elements
+    if (isShinyDoc())
+      $(window).trigger('resize');
+
+    // make main components visible
+    $('.section.sidebar').css('visibility', 'visible');
+    dashboardContainer.css('visibility', 'visible');
+
+    // handle location hash
+    handleLocationHash();
+
+    // intialize prism highlighting
+    initPrismHighlighting();
+
+    // record mobile and orientation state then register a handler
+    // to refresh if resize_reload is set to true and it changes
+    _options.isMobile = isMobilePhone();
+    _options.isPortrait = isPortrait();
+    if (_options.resize_reload) {
+      $(window).on('resize', function() {
+        if (_options.isMobile !== isMobilePhone() ||
+            _options.isPortrait !== isPortrait()) {
+          window.location.reload();
+        }
+      });
+    } else {
+      // if in desktop mode and resizing to mobile, make sure the heights are 100%
+      // This enforces what `fillpage.css` does for "wider" pages.
+      // Since we are not reloading once the page becomes small, we need to force the height to 100%
+      // This is a new situation introduced when `_options.resize_reload` is `false`
+      if (! _options.isMobile) {
+        // only add if `fillpage.css` was added in the first place
+        if (_options.fillPage) {
+          // fillpage.css
+          $("html,body,#dashboard").css("height", "100%");
+        }
+      }
+    }
+    // trigger layoutcomplete event
+    dashboardContainer.trigger('flexdashboard:layoutcomplete');
+  }
+
+  function resolveMobileClasses(dashboardContainer) {
+     // add top level layout class
+    dashboardContainer.addClass(isMobilePhone() ? 'mobile-layout' :
+                                                  'desktop-layout');
+
+    // look for .mobile sections and add .no-mobile to their peers
+    var mobileSections = $('.section.mobile');
+    mobileSections.each(function() {
+       var id = $(this).attr('id');
+       var nomobileId = id.replace(/-\d+$/, '');
+       $('#' + nomobileId).addClass('no-mobile');
+    });
+  }
+
+  function addNavbarItems(navbarItems) {
+
+    var navbarLeft = $('ul.navbar-left');
+    var navbarRight = $('ul.navbar-right');
+
+    for (var i = 0; i<navbarItems.length; i++) {
+
+      // get the item
+      var item = navbarItems[i];
+
+      // determine the container
+      var container = null;
+      if (item.align === "left")
+        container = navbarLeft;
+      else
+        container = navbarRight;
+
+      // navbar menu if we have multiple items
+      if (item.items) {
+        var menu = navbarMenu(null, item.icon, item.title, container);
+        for (var j = 0; j<item.items.length; j++) {
+          var subItem = item.items[j];
+          var li = $('<li></li>');
+          li.append(navbarLink(subItem.icon, subItem.title, subItem.href, subItem.target));
+          menu.append(li);
+        }
+      } else {
+        var li = $('<li></li>');
+        li.append(navbarLink(item.icon, item.title, item.href, item.target));
+        container.append(li);
+      }
+    }
+  }
+
+  // create or get a reference to an existing dropdown menu
+  function navbarMenu(id, icon, title, container) {
+    var existingMenu = [];
+    if (id)
+      existingMenu = container.children('#' + id);
+    if (existingMenu.length > 0) {
+      return existingMenu.children('ul');
+    } else {
+      var li = $('<li></li>');
+      if (id)
+        li.attr('id', id);
+      li.addClass('dropdown');
+      // auto add "Share" title on mobile if necessary
+      if (!title && icon && (icon === "fa-share-alt") && isMobilePhone())
+        title = "Share";
+      if (title) {
+        title = title + ' <span class="caret"></span>';
+      }
+      var a = navbarLink(icon, title, "#");
+      a.addClass('dropdown-toggle');
+      a.attr('data-toggle', 'dropdown');
+      a.attr('role', 'button');
+      a.attr('aria-expanded', 'false');
+      li.append(a);
+      var ul = $('<ul class="dropdown-menu"></ul>');
+      ul.attr('role', 'menu');
+      li.append(ul);
+      container.append(li);
+      return ul;
+    }
+  }
+
+  function addToNavbar(page, active) {
+
+    // capture the id and data-icon attribute (if any)
+    var id = page.attr('id');
+    var icon = page.attr('data-icon');
+    var navmenu = page.attr('data-navmenu');
+
+    // get hidden state (transfer this to navbar)
+    var hidden = page.hasClass('hidden');
+    page.removeClass('hidden');
+
+    // sanitize the id for use with bootstrap tabs
+    id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+    page.attr('id', id);
+
+    // get the wrapper
+    var wrapper = page.closest('.dashboard-page-wrapper');
+
+    // move the id to the wrapper
+    page.removeAttr('id');
+    wrapper.attr('id', id);
+
+    // add the tab-pane class to the wrapper
+    wrapper.addClass('tab-pane');
+    if (active)
+      wrapper.addClass('active');
+
+    // get a reference to the h1, discover its inner contens, then detach it
+    var h1 = wrapper.find('h1').first();
+    var title = h1.contents();
+    h1.detach();
+
+    // create a navbar item
+    var li = $('<li></li>');
+    var a = navbarLink(icon, title, '#' + id);
+    a.attr('data-toggle', 'tab');
+    li.append(a);
+
+    // add it to the navbar (or navbar menu if specified)
+    var container = $('ul.navbar-left');
+    if (navmenu) {
+      var menuId = navmenu.replace(/\s+/g, '');
+      var menu = navbarMenu(menuId, null, navmenu, container);
+      menu.append(li);
+    } else {
+      container.append(li);
+    }
+
+    // hide it if requested
+    if (hidden)
+      li.addClass('hidden');
+  }
+
+  function navbarLink(icon, title, href, target) {
+
+    var a = $('<a></a>');
+    if (icon) {
+
+      // get the name of the icon set and icon
+      var dashPos = icon.indexOf("-");
+      var iconSet = null;
+      var iconSplit = icon.split(" ");
+      if (iconSplit.length > 1) {
+        iconSet = iconSplit[0];
+        icon = iconSplit.slice(1).join(" ");
+      } else {
+        iconSet = icon.substring(0, dashPos);
+      }
+      var iconName = icon.substring(dashPos + 1);
+
+      // create the icon
+      var iconElement = $('<span class="' + iconSet + ' ' + icon + '"></span>');
+      if (title)
+        iconElement.css('margin-right', '7px');
+      a.append(iconElement);
+      // if href is null see if we can auto-generate based on icon (e.g. social)
+      if (!href)
+        maybeGenerateLinkFromIcon(iconName, a);
+    }
+    if (title)
+      a.append(title);
+
+    // add the href.
+    if (href) {
+      if (href === "source_embed") {
+        a.attr('href', '#');
+        a.attr('data-featherlight', "#flexdashboard-source-code");
+        a.featherlight({
+            beforeOpen: function(event){
+              $('body').addClass('unselectable');
+            },
+            afterClose: function(event){
+              $('body').removeClass('unselectable');
+            }
+        });
+      } else {
+        a.attr('href', href);
+      }
+    }
+
+    // add the arget
+    if (target)
+      a.attr('target', target);
+
+    return a;
+  }
+
+  // auto generate a link from an icon name (e.g. twitter) when possible
+  function maybeGenerateLinkFromIcon(iconName, a) {
+
+     var serviceLinks = {
+      "twitter": "https://twitter.com/share?text=" + encodeURIComponent(document.title) + "&url="+encodeURIComponent(location.href),
+      "facebook": "https://www.facebook.com/sharer/sharer.php?s=100&p[url]="+encodeURIComponent(location.href),
+      "google-plus": "https://plus.google.com/share?url="+encodeURIComponent(location.href),
+      "linkedin": "https://www.linkedin.com/shareArticle?mini=true&url="+encodeURIComponent(location.href) + "&title=" + encodeURIComponent(document.title),
+      "pinterest": "https://pinterest.com/pin/create/link/?url="+encodeURIComponent(location.href) + "&description=" + encodeURIComponent(document.title)
+    };
+
+    var makeSocialLink = function(a, href) {
+      a.attr('href', '#');
+      a.on('click', function(e) {
+        e.preventDefault();
+        window.open(href);
+      });
+    };
+
+    $.each(serviceLinks, function(key, value) {
+      if (iconName.indexOf(key) !== -1)
+        makeSocialLink(a, value);
+    });
+  }
+
+  // layout a dashboard page
+  function layoutDashboardPage(page) {
+
+    // use a page wrapper so that free form content above the
+    // dashboard appears at the top rather than the side (as it
+    // would without the wrapper in a column orientation)
+    var wrapper = $('<div class="dashboard-page-wrapper"></div>');
+    page.wrap(wrapper);
+
+    // if there are no level2 or level3 headers synthesize a level3
+    // header to contain the (e.g. frame it, scroll container, etc.)
+    var headers = page.find('h2,h3');
+    if (headers.length === 0)
+      page.wrapInner('<div class="section level3"></div>');
+
+    // hoist up any content before level 2 or level 3 headers
+    var children = page.children();
+    children.each(function(index) {
+      if ($(this).hasClass('level2') || $(this).hasClass('level3'))
+        return false;
+      $(this).insertBefore(page);
+    });
+
+    // determine orientation and fillPage behavior for distinct media
+    var orientation, fillPage, storyboard;
+
+    // media: mobile phone
+    if (isMobilePhone()) {
+
+      // if there is a sidebar we need to ensure it's content
+      // is properly framed as an h3
+      var sidebar = page.find('.section.sidebar');
+      sidebar.removeClass('sidebar');
+      sidebar.wrapInner('<div class="section level3"></div>');
+      var h2 = sidebar.find('h2');
+      var h3 = $('<h3></h3>');
+      h3.append(h2.contents());
+      h3.insertBefore(h2);
+      h2.detach();
+
+      // wipeout h2 elements then enclose them in a single h2
+      var level2 = page.find('div.section.level2');
+      level2.each(function() {
+        level2.children('h2').remove();
+        level2.children().unwrap();
+      });
+      page.wrapInner('<div class="section level2"></div>');
+
+      // substitute mobile images
+      if (isPortrait()) {
+        var mobileFigures = $('img.mobile-figure');
+        mobileFigures.each(function() {
+          // get the src (might be base64 encoded)
+          var src = $(this).attr('src');
+
+          // find it's peer
+          var id = $(this).attr('data-mobile-figure-id');
+          var img = $('img[data-figure-id=' + id + "]");
+          img.attr('src', src)
+             .attr('width', _options.defaultFigWidthMobile)
+             .attr('height', _options.defaultFigHeightMobile);
+        });
+      }
+
+      // hoist storyboard commentary into it's own section
+      if (page.hasClass('storyboard')) {
+        var commentaryHR = page.find('div.section.level3 hr');
+        commentaryHR.each(function() {
+          var commentary = $(this).nextAll().detach();
+          var commentarySection = $('<div class="section level3"></div>');
+          commentarySection.append(commentary);
+          commentarySection.insertAfter($(this).closest('div.section.level3'));
+          $(this).remove();
+        });
+      }
+
+      // force a non full screen layout by columns
+      orientation = _options.orientation = 'columns';
+      fillPage = _options.fillPage = false;
+      storyboard = _options.storyboard = false;
+
+    // media: desktop
+    } else {
+
+      // determine orientation
+      orientation = page.attr('data-orientation');
+      if (orientation !== 'rows' && orientation != 'columns')
+        orientation = _options.orientation;
+
+      // determine storyboard mode
+      storyboard = page.hasClass('storyboard');
+
+      // fillPage based on options (force for storyboard)
+      fillPage = _options.fillPage || storyboard;
+
+      // handle sidebar
+      var sidebar = page.find('.section.level2.sidebar');
+      if (sidebar.length > 0)
+        layoutSidebar(sidebar, page);
+    }
+
+    // give it and it's parent divs height: 100% if we are in fillPage mode
+    if (fillPage) {
+      page.addClass('vertical-layout-fill');
+      page.css('height', '100%');
+      page.parents('div').css('height', '100%');
+    } else {
+      page.addClass('vertical-layout-scroll');
+    }
+
+    // perform the layout
+    if (storyboard)
+      layoutPageAsStoryboard(page);
+    else if (orientation === 'rows')
+      layoutPageByRows(page, fillPage);
+    else if (orientation === 'columns')
+      layoutPageByColumns(page, fillPage);
+  }
+
+  function layoutSidebar(sidebar, content) {
+
+    // get it out of the header hierarchy
+    sidebar = sidebar.first();
+    if (sidebar.hasClass('level1')) {
+      sidebar.removeClass('level1');
+      sidebar.children('h1').remove();
+    } else if (sidebar.hasClass('level2')) {
+      sidebar.removeClass('level2');
+      sidebar.children('h2').remove();
+    }
+
+    // determine width
+    var sidebarWidth = isTablet() ? 220 : 250;
+    var dataWidth = parseInt(sidebar.attr('data-width'));
+    if (dataWidth)
+      sidebarWidth = dataWidth;
+
+    // set the width and shift the page right to accomodate the sidebar
+    sidebar.css('width', sidebarWidth + 'px');
+    content.css('padding-left', sidebarWidth + 'px');
+
+    // wrap it's contents in a form
+    sidebar.wrapInner($('<form></form>'));
+  }
+
+  function layoutPageAsStoryboard(page) {
+
+    // create storyboard navigation
+    var nav = $('<div class="storyboard-nav"></div>');
+
+    // add navigation buttons
+    var prev = $('<button class="sbprev"><i class="fa fa-angle-left"></i></button>');
+    nav.append(prev);
+    var next= $('<button class="sbnext"><i class="fa fa-angle-right"></i></button>');
+    nav.append(next);
+
+    // add navigation frame
+    var frameList = $('<div class="sbframelist"></div>');
+    nav.append(frameList);
+    var ul = $('<ul></ul>');
+    frameList.append(ul);
+
+     // find all the level3 sections (those are the storyboard frames)
+    var frames = page.find('div.section.level3');
+    frames.each(function() {
+
+      // mark it
+      $(this).addClass('sbframe');
+
+      // divide it into chart content and (optional) commentary
+      $(this).addClass('dashboard-column-orientation');
+
+      // stuff the chart into it's own div w/ flex
+      $(this).wrapInner('<div class="sbframe-component"></div>');
+      setFlex($(this), 1);
+      var frame = $(this).children('.sbframe-component');
+
+      // extract the title from the h3
+      var li = $('<li></li>');
+      var h3 = frame.children('h3');
+      li.append(h3.contents());
+      h3.detach();
+      ul.append(li);
+
+      // extract commentary
+      var hr = frame.children('hr');
+      if (hr.length) {
+        var commentary = hr.nextAll().detach();
+        hr.remove();
+        var commentaryFrame = $('<div class="sbframe-commentary"></div>');
+        commentaryFrame.addClass('flowing-content-shim');
+        commentaryFrame.addClass('flowing-content-container');
+        commentaryFrame.append(commentary);
+        $(this).append(commentaryFrame);
+
+        // look for a data-commentary-width attribute
+        var commentaryWidth = $(this).attr('data-commentary-width');
+        if (commentaryWidth)
+          commentaryFrame.css('width', commentaryWidth + 'px');
+      }
+
+      // layout the chart (force flex)
+      var result = layoutChart(frame, true);
+
+      // ice the notes if there are none
+      if (!result.notes)
+        frame.find('.chart-notes').remove();
+
+      // set flex on chart
+      setFlex(frame, 1);
+    });
+
+    // create a div to hold all the frames
+    var frameContent = $('<div class="sbframe-content"></div>');
+    frameContent.addClass('dashboard-row-orientation');
+    frameContent.append(frames.detach());
+
+    // row orientation to stack nav and frame content
+    page.addClass('dashboard-row-orientation');
+    page.append(nav);
+    page.append(frameContent);
+    setFlex(frameContent, 1);
+
+    // initialize sly
+    var sly = new Sly(frameList, {
+    		horizontal: true,
+    		itemNav: 'basic',
+    		smart: true,
+    		activateOn: 'click',
+    		startAt: 0,
+    		scrollBy: 1,
+    		activatePageOn: 'click',
+    		speed: 200,
+    		moveBy: 600,
+    		dragHandle: true,
+    		dynamicHandle: true,
+    		clickBar: true,
+    		keyboardNavBy: 'items',
+    		next: next,
+    		prev: prev
+    	}).init();
+
+    // make first frame active
+    frames.removeClass('active');
+    frames.first().addClass('active');
+
+    // subscribe to frame changed events
+    sly.on('active', function (eventName, itemIndex) {
+      frames.removeClass('active');
+      frames.eq(itemIndex).addClass('active')
+                          .trigger('shown');
+    });
+  }
+
+  function layoutPageByRows(page, fillPage) {
+
+    // row orientation
+    page.addClass('dashboard-row-orientation');
+
+    // find all the level2 sections (those are the rows)
+    var rows = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (rows.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      rows = page.find('div.section.level2');
+    }
+
+    rows.each(function () {
+
+      // flags
+      var haveNotes = false;
+      var haveFlexHeight = true;
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // give it row layout semantics if it's not a tabset
+      if (!isTabset)
+        $(this).addClass('dashboard-row');
+
+      // find all of the level 3 subheads
+      var columns = $(this).find('div.section.level3');
+
+      // determine figureSizes sizes
+      var figureSizes = chartFigureSizes(columns);
+
+      // fixup the columns
+      columns.each(function(index) {
+
+        // layout the chart (force flex if we are in a tabset)
+        var result = layoutChart($(this), isTabset);
+
+        // update flexHeight state
+        if (!result.flex)
+          haveFlexHeight = false;
+
+        // update state
+        if (result.notes)
+          haveNotes = true;
+
+        // set the column flex based on the figure width
+        // (value boxes will just get the default figure width)
+        var chartWidth = figureSizes[index].width;
+        setFlex($(this), chartWidth + ' ' + chartWidth + ' 0px');
+
+      });
+
+      // remove empty chart note divs
+      if (isTabset)
+        $(this).find('.chart-notes').filter(function() {
+            return $(this).html() === "&nbsp;";
+        }).remove();
+      if (!haveNotes)
+        $(this).find('.chart-notes').remove();
+
+       // make it a flexbox row
+      if (haveFlexHeight)
+        $(this).addClass('dashboard-row-flex');
+
+      // now we can set the height on all the wrappers (based on maximum
+      // figure height + room for title and notes, or data-height on the
+      // container if specified). However, don't do this if there is
+      // no flex on any of the constituent columns
+      var flexHeight = null;
+      var dataHeight = parseInt($(this).attr('data-height'));
+      if (dataHeight)
+        flexHeight = adjustedHeight(dataHeight, columns.first());
+      else if (haveFlexHeight)
+        flexHeight = maxChartHeight(figureSizes, columns);
+      if (flexHeight) {
+        if (fillPage)
+          setFlex($(this), flexHeight + ' ' + flexHeight + ' 0px');
+        else {
+          $(this).css('height', flexHeight + 'px');
+          setFlex($(this), '0 0 ' + flexHeight + 'px');
+        }
+      }
+
+    });
+  }
+
+  function layoutPageByColumns(page, fillPage) {
+
+    // column orientation
+    page.addClass('dashboard-column-orientation');
+
+    // find all the level2 sections (those are the columns)
+    var columns = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (columns.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      columns = page.find('div.section.level2');
+    }
+
+    // layout each column
+    columns.each(function (index) {
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // make it a flexbox column
+      $(this).addClass('dashboard-column');
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // find all the h3 elements
+      var rows = $(this).find('div.section.level3');
+
+      // get the figure sizes for the rows
+      var figureSizes = chartFigureSizes(rows);
+
+      // column flex is the max row width (or data-width if specified)
+      var flexWidth;
+      var dataWidth = parseInt($(this).attr('data-width'));
+      if (dataWidth)
+        flexWidth = dataWidth;
+      else
+        flexWidth = maxChartWidth(figureSizes);
+      setFlex($(this), flexWidth + ' ' + flexWidth + ' 0px');
+
+      // layout each chart
+      rows.each(function(index) {
+
+        // perform the layout
+        var result = layoutChart($(this), false);
+
+        // ice the notes if there are none
+        if (!result.notes)
+          $(this).find('.chart-notes').remove();
+
+        // set flex height based on figHeight, then adjust
+        if (result.flex) {
+          var chartHeight = figureSizes[index].height;
+          chartHeight = adjustedHeight(chartHeight, $(this));
+          if (fillPage)
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' 0px');
+          else {
+            $(this).css('height', chartHeight + 'px');
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' ' + chartHeight + 'px');
+          }
+        }
+      });
+    });
+  }
+
+  function chartFigureSizes(charts) {
+
+    // sizes
+    var figureSizes = new Array(charts.length);
+
+    // check each chart
+    charts.each(function(index) {
+
+      // start with default
+      figureSizes[index] = {
+        width: _options.defaultFigWidth,
+        height: _options.defaultFigHeight
+      };
+
+      // look for data-height or data-width then knit options
+      var dataWidth = parseInt($(this).attr('data-width'));
+      var dataHeight = parseInt($(this).attr('data-height'));
+      var knitrOptions = $(this).find('.knitr-options:first');
+      var knitrWidth, knitrHeight;
+      if (knitrOptions) {
+        knitrWidth = parseInt(knitrOptions.attr('data-fig-width'));
+        knitrHeight =  parseInt(knitrOptions.attr('data-fig-height'));
+      }
+
+      // width
+      if (dataWidth)
+        figureSizes[index].width = dataWidth;
+      else if (knitrWidth)
+        figureSizes[index].width = knitrWidth;
+
+      // height
+      if (dataHeight)
+        figureSizes[index].height = dataHeight;
+      else if (knitrHeight)
+        figureSizes[index].height = knitrHeight;
+    });
+
+    // return sizes
+    return figureSizes;
+  }
+
+  function maxChartHeight(figureSizes, charts) {
+
+    // first compute the maximum height
+    var maxHeight = _options.defaultFigHeight;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].height > maxHeight)
+        maxHeight = figureSizes[i].height;
+
+    // now add offests for chart title and chart notes
+    if (charts.length)
+      maxHeight = adjustedHeight(maxHeight, charts.first());
+
+    return maxHeight;
+  }
+
+  function adjustedHeight(height, chart) {
+    if (chart.length > 0) {
+      var chartTitle = chart.find('.chart-title');
+      if (chartTitle.length)
+        height += chartTitle.first().outerHeight();
+      var chartNotes = chart.find('.chart-notes');
+      if (chartNotes.length)
+        height += chartNotes.first().outerHeight();
+    }
+    return height;
+  }
+
+  function maxChartWidth(figureSizes) {
+    var maxWidth = _options.defaultFigWidth;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].width > maxWidth)
+        maxWidth = figureSizes[i].width;
+    return maxWidth;
+  }
+
+  // layout a chart
+  function layoutChart(chart, forceFlex) {
+
+    // state to return
+    var result = {
+      notes: false,
+      flex: false
+    };
+
+    // extract the title
+    var title = extractTitle(chart);
+
+    // find components that apply to this container
+    var components = componentsFind(chart);
+
+    // if it's a custom component then call it and return
+    var customComponents = componentsCustom(components);
+    if (customComponents.length) {
+      componentsLayout(customComponents, title, chart);
+      result.notes = false;
+      result.flex = forceFlex || componentsFlex(customComponents);
+      return result;
+    }
+
+    // put all the content in a chart wrapper div
+    chart.addClass('chart-wrapper');
+    chart.wrapInner('<div class="chart-stage"></div>');
+    var chartContent = chart.children('.chart-stage');
+
+    // flex the content if appropriate
+    result.flex = forceFlex || componentsFlex(components);
+    if (result.flex) {
+      // add flex classes
+      chart.addClass('chart-wrapper-flex');
+      chartContent.addClass('chart-stage-flex');
+
+      // additional shim to break out of flexbox sizing
+      chartContent.wrapInner('<div class="chart-shim"></div>');
+      chartContent = chartContent.children('.chart-shim');
+    }
+
+    // set custom data-padding attribute
+    var pad = chart.attr('data-padding');
+    if (pad) {
+      if (pad === "0")
+        chart.addClass('no-padding');
+      else {
+        pad = pad + 'px';
+        chartContent.css('left', pad)
+                    .css('top', pad)
+                    .css('right', pad)
+                    .css('bottom', pad)
+      }
+    }
+
+    // call compoents
+    componentsLayout(components, title, chartContent);
+
+    // also activate components on shiny output
+    findShinyOutput(chartContent).on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+
+          // see if we opted out of flex based on our output (for shiny
+          // we can't tell what type of output we have until after the
+          // value is bound)
+          var components = componentsFind(element);
+          var flex = forceFlex || componentsFlex(components);
+          if (!flex) {
+            chart.css('height', "");
+            setFlex(chart, "");
+            chart.removeClass('chart-wrapper-flex');
+            chartContent.removeClass('chart-stage-flex');
+            chartContent.children().unwrap();
+          }
+
+          // perform layout
+          componentsLayout(components, title, element.parent());
+        }, 10);
+      });
+
+    // add the title
+    var chartTitle = $('<div class="chart-title"></div>');
+    chartTitle.append(title);
+    chart.prepend(chartTitle);
+
+    // add the notes section
+    var chartNotes = $('<div class="chart-notes"></div>');
+    chartNotes.html('&nbsp;');
+    chart.append(chartNotes);
+
+    // attempt to extract notes if we have a component
+    if (components.length)
+      result.notes = extractChartNotes(chartContent, chartNotes);
+
+    // return result
+    return result;
+  }
+
+  // build a tabset from a section div with the .tabset class
+  function layoutTabset(tabset) {
+
+    // check for fade option
+    var fade = tabset.hasClass("tabset-fade");
+    var navClass = "nav-tabs";
+
+    // determine the heading level of the tabset and tabs
+    var match = tabset.attr('class').match(/level(\d) /);
+    if (match === null)
+      return;
+    var tabsetLevel = Number(match[1]);
+    var tabLevel = tabsetLevel + 1;
+
+    // find all subheadings immediately below
+    var tabs = tabset.find("div.section.level" + tabLevel);
+    if (!tabs.length)
+      return;
+
+    // create tablist and tab-content elements
+    var tabList = $('<ul class="nav ' + navClass + '" role="tablist"></ul>');
+    $(tabs[0]).before(tabList);
+    var tabContent = $('<div class="tab-content"></div>');
+    $(tabs[0]).before(tabContent);
+
+    // build the tabset
+    tabs.each(function(i) {
+
+      // get the tab div
+      var tab = $(tabs[i]);
+
+      // get the id then sanitize it for use with bootstrap tabs
+      var id = tab.attr('id');
+
+      // sanitize the id for use with bootstrap tabs
+      id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+      tab.attr('id', id);
+
+      // get the heading element within it and grab it's text
+      var heading = tab.find('h' + tabLevel + ':first');
+      var headingDom = heading.contents();
+
+      // build and append the tab list item
+      var a = $('<a role="tab" data-toggle="tab"></a>');
+      a.append(headingDom);
+      a.attr('href', '#' + id);
+      a.attr('aria-controls', id);
+      var li = $('<li role="presentation"></li>');
+      li.append(a);
+      if (i === 0)
+        li.attr('class', 'active');
+      tabList.append(li);
+
+      // set it's attributes
+      tab.attr('role', 'tabpanel');
+      tab.addClass('tab-pane');
+      tab.addClass('tabbed-pane');
+      tab.addClass('no-title');
+      if (fade)
+        tab.addClass('fade');
+      if (i === 0) {
+        tab.addClass('active');
+        if (fade)
+          tab.addClass('in');
+      }
+
+      // move it into the tab content div
+      tab.detach().appendTo(tabContent);
+    });
+
+    // add nav-tabs-custom
+    tabset.addClass('nav-tabs-custom');
+
+    // internal layout is dashboard-column with tab-content flexing
+    tabset.addClass('dashboard-column');
+    setFlex(tabContent, 1);
+  }
+
+  // one time global initialization for components
+  function componentsInit(dashboardContainer) {
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.init)
+        component.init(dashboardContainer);
+    }
+  }
+
+  // find components that apply within a container
+  function componentsFind(container) {
+
+    // look for components
+    var components = [];
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.find(container).length)
+        components.push(component);
+    }
+
+    // if there were none then use a special flowing content component
+    // that just adds a scrollbar in fillPage mode
+    if (components.length == 0) {
+      components.push({
+        find: function(container) {
+          return container;
+        },
+
+        flex: function(fillPage) {
+          return fillPage;
+        },
+
+        layout: function(title, container, element, fillPage) {
+          if (fillPage) {
+            container.addClass('flowing-content-shim');
+            container.addClass('flowing-content-container');
+          }
+        }
+      });
+    }
+
+    return components;
+  }
+
+  // if there is a custom component then pick it out
+  function componentsCustom(components) {
+    var customComponent = [];
+    for (var i=0; i<components.length; i++)
+      if (components[i].type === "custom") {
+        customComponent.push(components[i]);
+        break;
+      }
+    return customComponent;
+  }
+
+  // query all components for flex
+  function componentsFlex(components) {
+
+    // no components at all means no flex
+    if (components.length === 0)
+      return false;
+
+    // otherwise query components (assume true unless we see false)
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++)
+      if (components[i].flex && !components[i].flex(_options.fillPage))
+        return false;
+    return true;
+  }
+
+  // layout all components
+  function componentsLayout(components, title, container) {
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++) {
+      var element = components[i].find(container);
+      if (components[i].layout) {
+        // call layout (don't call other components if it returns false)
+        var result = components[i].layout(title, container, element, _options.fillPage);
+        if (result === false)
+          return;
+      }
+    }
+  }
+
+  // get a reference to the h3, discover it's inner html, and remove it
+  function extractTitle(container) {
+    var h3 = container.children('h3').first();
+    var title = '';
+    if (!container.hasClass('no-title'))
+      title = h3.contents();
+    h3.detach();
+    return title;
+  }
+
+  // extract chart notes
+  function extractChartNotes(chartContent, chartNotes) {
+    // look for a terminating blockquote or image caption
+    var blockquote = chartContent.children('blockquote:last-child');
+    var caption = chartContent.children('div.image-container')
+                              .children('p.caption');
+    if (blockquote.length) {
+      chartNotes.empty().append(blockquote.children('p:first-child').contents());
+      blockquote.remove();
+      return true;
+    } else if (caption.length) {
+      chartNotes.empty().append(caption.contents());
+      caption.remove();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function findShinyOutput(chartContent) {
+    return chartContent.find('.shiny-text-output, .shiny-html-output');
+  }
+
+  // safely detect rendering on a mobile phone
+  function isMobilePhone() {
+    try
+    {
+      return ! window.matchMedia("only screen and (min-width: 768px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  function isFillPage() {
+    return _options.fillPage;
+  }
+
+  // detect portrait mode
+  function isPortrait() {
+    return ($(window).width() < $(window).height());
+  }
+
+  // safely detect rendering on a tablet
+  function isTablet() {
+    try
+    {
+      return window.matchMedia("only screen and (min-width: 769px) and (max-width: 992px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  // test whether this is a shiny doc
+  function isShinyDoc() {
+    return (typeof(window.Shiny) !== "undefined" && !!window.Shiny.outputBindings);
+  }
+
+  // set flex using vendor specific prefixes
+  function setFlex(el, flex) {
+    el.css('-webkit-box-flex', flex)
+      .css('-webkit-flex', flex)
+      .css('-ms-flex', flex)
+      .css('flex', flex);
+  }
+
+  // support bookmarking of pages
+  function handleLocationHash() {
+
+    // restore tab/page from bookmark
+    var hash = window.decodeURIComponent(window.location.hash);
+    if (hash.length > 0)
+      $('ul.nav a[href="' + hash + '"]').tab('show');
+    FlexDashboardUtils.manageActiveNavbarMenu();
+
+    // navigate to a tab when the history changes
+    window.addEventListener("popstate", function(e) {
+      var hash = window.decodeURIComponent(window.location.hash);
+      var activeTab = $('ul.nav a[href="' + hash + '"]');
+      if (activeTab.length) {
+        activeTab.tab('show');
+      } else {
+        $('ul.nav a:first').tab('show');
+      }
+      FlexDashboardUtils.manageActiveNavbarMenu();
+    });
+
+    // add a hash to the URL when the user clicks on a tab/page
+    $('.navbar-nav a[data-toggle="tab"]').on('click', function(e) {
+      var baseUrl = FlexDashboardUtils.urlWithoutHash(window.location.href);
+      var hash = FlexDashboardUtils.urlHash($(this).attr('href'));
+      var href = baseUrl + hash;
+      FlexDashboardUtils.setLocation(href);
+    });
+
+    // handle clicks of other links that should activate pages
+    var navPages = $('ul.navbar-nav li a[data-toggle=tab]');
+    navPages.each(function() {
+      var href =  $(this).attr('href');
+      var links = $('a[href="' + href + '"][data-toggle!=tab]');
+      links.each(function() {
+        $(this).on('click', function(e) {
+          window.FlexDashboardUtils.showPage(href);
+        });
+      });
+    });
+  }
+
+  // tweak Prism highlighting
+  function initPrismHighlighting() {
+
+    if (window.Prism) {
+      Prism.languages.insertBefore('r', 'comment', {
+        'heading': [
+          {
+            // title 1
+        	  // =======
+
+        	  // title 2
+        	  // -------
+        	  pattern: /\w+.*(?:\r?\n|\r)(?:====+|----+)/,
+            alias: 'operator'
+          },
+          {
+            // ### title 3
+            pattern: /(^\s*)###[^#].+/m,
+            lookbehind: true,
+            alias: 'operator'
+          }
+        ]
+      });
+
+      // prism highlight
+      Prism.highlightAll();
+    }
+  }
+
+
+  // get theme color
+  var themeColors = {
+    bootstrap: {
+      primary: "rgba(51, 122, 183, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cerulean: {
+      primary: "rgb(47, 164, 231)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    journal: {
+      primary: "rgba(235, 104, 100, 0.70)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    flatly: {
+      primary: "rgba(44, 62, 80, 0.70)",
+      info: "rgba(52, 152, 219, 0.70)",
+      success: "rgba(24, 188, 156, 0.70)",
+      warning: "rgba(243, 156, 18, 0.70)",
+      danger: "rgba(231, 76, 60, 0.70)"
+    },
+    readable: {
+      primary: "rgba(69, 130, 236, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    spacelab: {
+      primary: "rgba(68, 110, 155, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    united: {
+      primary: "rgba(221, 72, 20, 0.30)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cosmo: {
+      primary: "rgba(39, 128, 227, 0.7)",
+      info: "rgba(153, 84, 187, 0.7)",
+      success: "rgba(63, 182, 24, 0.7)",
+      warning: "rgba(255, 117, 24, 0.7)",
+      danger: "rgba(255, 0, 57, 0.7)"
+    },
+    lumen: {
+      primary: "rgba(21, 140, 186, 0.70)",
+      info: "rgba(117, 202, 235, 0.90)",
+      success: "rgba(40, 182, 44, 0.70)",
+      warning: "rgba(255, 133, 27, 0.70)",
+      danger: "rgba(255, 65, 54, 0.70)"
+    },
+    paper: {
+      primary: "rgba(33, 150, 243, 0.35)",
+      info: "rgb(225, 190, 231)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(255, 224, 178)",
+      danger: "rgb(249, 189, 187)"
+    },
+    sandstone: {
+      primary: "rgba(50, 93, 136, 0.3)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    simplex: {
+      primary: "rgba(217, 35, 15, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    yeti: {
+      primary: "rgba(0, 140, 186, 0.298039)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    }
+  }
+  function themeColor(color) {
+    return themeColors[_options.theme][color];
+  }
+
+  FlexDashboard.prototype = {
+    constructor: FlexDashboard,
+    init: init,
+    isMobilePhone: isMobilePhone,
+    isFillPage: isFillPage,
+    themeColor: themeColor
+  };
+
+  return FlexDashboard;
+
+})();
+
+// utils
+window.FlexDashboardUtils = {
+  resizableImage: function(img) {
+    var src = img.attr('src');
+    var url = 'url("' + src + '")';
+    img.parent().css('background', url)
+                .css('background-size', 'contain')
+                .css('background-repeat', 'no-repeat')
+                .css('background-position', 'center')
+                .addClass('image-container');
+  },
+  setLocation: function(href) {
+    if (history && history.pushState) {
+      history.pushState(null, null, href);
+    } else {
+      window.location.replace(href);
+    }
+    setTimeout(function() {
+        window.scrollTo(0, 0);
+    }, 10);
+    this.manageActiveNavbarMenu();
+  },
+  showPage: function(href) {
+    $('ul.navbar-nav li a[href="' + href + '"]').tab('show');
+    var baseUrl = this.urlWithoutHash(window.location.href);
+    var loc = baseUrl + href;
+    this.setLocation(loc);
+  },
+  showLinkedValue: function(href) {
+    // check for a page link
+    if ($('ul.navbar-nav li a[data-toggle=tab][href="' + href + '"]').length > 0)
+      this.showPage(href);
+    else
+      window.open(href);
+  },
+  urlWithoutHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(0, hashLoc);
+    else
+      return url;
+  },
+  urlHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(hashLoc);
+    else
+      return "";
+  },
+  manageActiveNavbarMenu: function () {
+    // remove active from anyone currently active
+    $('.navbar ul.nav').find('li').removeClass('active');
+    // find the active tab
+    var activeTab = $('.dashboard-page-wrapper.tab-pane.active');
+    if (activeTab.length > 0) {
+      var tabId = activeTab.attr('id');
+      if (tabId)
+        $(".navbar ul.nav a[href='#" + tabId + "']").parents('li').addClass('active');
+    }
+  }
+};
+
+window.FlexDashboard = new FlexDashboard();
+
+// empty content
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    if (container.find('p').length == 0)
+      return container;
+    else
+      return $();
+  }
+})
+
+// plot image
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('p')
+                    .children('img:only-child');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// plot image (figure style)
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.figure').children('img');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// htmlwidget
+window.FlexDashboardComponents.push({
+
+  init: function(dashboardContainer) {
+    // trigger "shown" after initial layout to force static htmlwidgets
+    // in runtime: shiny to be resized after the dom has been transformed
+    dashboardContainer.on('flexdashboard:layoutcomplete', function(event) {
+      setTimeout(function() {
+        dashboardContainer.trigger('shown');
+      }, 200);
+    });
+  },
+
+  find: function(container) {
+    return container.children('div[id^="htmlwidget-"],div.html-widget');
+  }
+});
+
+// gauge
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.html-widget.gauge');
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+
+  }
+
+});
+
+// shiny output
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.children('div[class^="shiny-"]');
+  }
+});
+
+// datatables
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.find('.datatables');
+  },
+  flex: function(fillPage) {
+    return fillPage;
+  }
+});
+
+// bootstrap table
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    var bsTable = container.find('table.table');
+    if (bsTable.length !== 0)
+      return bsTable;
+    else
+      return container.find('tr.header').parent('thead').parent('table');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var bsTable = element;
+
+    // fixup xtable generated tables with a proper thead
+    var headerRow = bsTable.find('tbody > tr:first-child > th').parent();
+    if (headerRow.length > 0) {
+      var thead = $('<thead></thead>');
+      bsTable.prepend(thead);
+      headerRow.detach().appendTo(thead);
+    }
+
+    // improve appearance
+    container.addClass('bootstrap-table');
+
+    // for fill page provide scrolling w/ sticky headers
+    if (fillPage) {
+      // force scrollbar on overflow
+      container.addClass('flowing-content-shim');
+
+      // stable table headers when scrolling
+      bsTable.stickyTableHeaders({
+        scrollableArea: container
+      });
+    }
+  }
+});
+
+// embedded shiny app
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('iframe.shiny-frame');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage) {
+      element.attr('height', '100%');
+    } else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (!height)
+        height = element.attr('height');
+      if (!height)
+        element.attr('height', 500);
+    }
+  }
+});
+
+// shiny fillRow or fillCol
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('.flexfill-container');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage)
+      element.css('height', '100%');
+    else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (height === "100%" || height === "auto" || height === "initial" ||
+          height === "inherit" || !height) {
+        element.css('height', 500);
+      }
+    }
+  }
+});
+
+// valueBox
+window.FlexDashboardComponents.push({
+
+  type: "custom",
+
+  find: function(container) {
+    if (container.find('span.value-output, .shiny-valuebox-output').length)
+      return container;
+    else
+      return $();
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var chartTitle = title;
+    var valueBox = element;
+
+    // add value-box class to container
+    container.addClass('value-box');
+
+    // value paragraph
+    var value = $('<p class="value"></p>');
+
+    // if we have shiny-text-output then just move it in
+    var valueOutputSpan = [];
+    var shinyOutput = valueBox.find('.shiny-valuebox-output').detach();
+    if (shinyOutput.length) {
+      valueBox.children().remove();
+      shinyOutput.html("&mdash;");
+      value.append(shinyOutput);
+    } else {
+      // extract the value (remove leading vector index)
+      var chartValue = valueBox.text().trim();
+      chartValue = chartValue.replace("[1] ", "");
+      valueOutputSpan = valueBox.find('span.value-output').detach();
+      valueBox.children().remove();
+      value.text(chartValue);
+    }
+
+    // caption
+    var caption = $('<p class="caption"></p>');
+    caption.append(chartTitle);
+
+    // build inner div for value box and add it
+    var inner = $('<div class="inner"></div>');
+    inner.append(value);
+    inner.append(caption);
+    valueBox.append(inner);
+
+    // add icon if specified
+    var icon = $('<div class="icon"><i></i></div>');
+    valueBox.append(icon);
+    function setIcon(chartIcon) {
+      var iconLib = "";
+      var iconSplit = chartIcon.split(" ");
+      if (iconSplit.length > 1) {
+        iconLib = iconSplit[0];
+        chartIcon = iconSplit.slice(1).join(" ");
+      } else {
+        var components = chartIcon.split("-");
+        if (components.length > 1)
+          iconLib = components[0];
+      }
+      icon.children('i').attr('class', iconLib + ' ' + chartIcon);
+    }
+    var chartIcon = valueBox.attr('data-icon');
+    if (chartIcon)
+      setIcon(chartIcon);
+
+    // set color based on data-background if necessary
+    var dataBackground = valueBox.attr('data-background');
+    if (dataBackground)
+      valueBox.css('background-color', bgColor);
+    else {
+      // default to bg-primary if no other background is specified
+      if (!valueBox.hasClass('bg-primary') &&
+          !valueBox.hasClass('bg-info') &&
+          !valueBox.hasClass('bg-warning') &&
+          !valueBox.hasClass('bg-success') &&
+          !valueBox.hasClass('bg-danger')) {
+        valueBox.addClass('bg-primary');
+      }
+    }
+
+    // handle data attributes in valueOutputSpan
+    function handleValueOutput(valueOutput) {
+
+      // caption
+      var dataCaption = valueOutput.attr('data-caption');
+      if (dataCaption)
+        caption.html(dataCaption);
+
+      // icon
+      var dataIcon = valueOutput.attr('data-icon');
+      if (dataIcon)
+        setIcon(dataIcon);
+
+      // color
+      var dataColor = valueOutput.attr('data-color');
+      if (dataColor) {
+        if (dataColor.indexOf('bg-') === 0) {
+          valueBox.css('background-color', '');
+          if (!valueBox.hasClass(dataColor)) {
+             valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+             valueBox.addClass(dataColor);
+          }
+        } else {
+          valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+          valueBox.css('background-color', dataColor);
+        }
+      }
+
+      // url
+      var dataHref = valueOutput.attr('data-href');
+      if (dataHref) {
+        valueBox.addClass('linked-value');
+        valueBox.off('click.value-box');
+        valueBox.on('click.value-box', function(e) {
+          window.FlexDashboardUtils.showLinkedValue(dataHref);
+        });
+      }
+    }
+
+    // check for a valueOutputSpan
+    if (valueOutputSpan.length > 0) {
+      handleValueOutput(valueOutputSpan);
+    }
+
+    // if we have a shinyOutput then bind a listener to handle
+    // new valueOutputSpan values
+    shinyOutput.on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+          var valueOutputSpan = element.find('span.value-output');
+          if (valueOutputSpan.length > 0)
+            handleValueOutput(valueOutputSpan);
+        }, 10);
+      }
+    );
+  }
+});
+</script>
+
+<div id="dashboard-container">
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<div id="row-1" class="section level2">
+<h2>Row 1</h2>
+<div id="number-of-species-with-sequenced-genomes-per-taxa" class="section level3" data-width="600">
+<h3 data-width="600">Number of species with sequenced genomes per taxa</h3>
+<div class="knitr-options" data-fig-width="864" data-fig-height="912">
+
+</div>
+<p><img src="index_files/figure-html/species_per_taxa-1.png" width="1800" data-figure-id=fig1 /></p>
+</div>
+<div id="complete-buscos-across-families" class="section level3" data-width="400">
+<h3 data-width="400">Complete BUSCOs across families</h3>
+<div class="knitr-options" data-fig-width="384" data-fig-height="768">
+
+</div>
+<p><img src="index_files/figure-html/buscos_families-1.png" width="1200" data-figure-id=fig2 /></p>
+</div>
+</div>
+<div id="row-2" class="section level2">
+<h2>Row 2</h2>
+<div id="species-level-information" class="section level3" data-width="900">
+<h3 data-width="900">Species-level information</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div id="htmlwidget-f2fda14fc260420ea289" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f2fda14fc260420ea289">{"x":{"style":"bootstrap4","filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;Acanthaceae&quot;,&quot;Actinidia&quot;,&quot;Actinidiaceae&quot;,&quot;Amaranthaceae&quot;,&quot;Amaryllidaceae&quot;,&quot;Amborellaceae&quot;,&quot;Anacardiaceae&quot;,&quot;Anthocerotaceae&quot;,&quot;Apiaceae&quot;,&quot;Apocynaceae&quot;,&quot;Araceae&quot;,&quot;Arecaceae&quot;,&quot;Asparagaceae&quot;,&quot;Asphodelaceae&quot;,&quot;Asteraceae&quot;,&quot;Begoniaceae&quot;,&quot;Berberidaceae&quot;,&quot;Betulaceae&quot;,&quot;Bignoniaceae&quot;,&quot;Boraginaceae&quot;,&quot;Brassicaceae&quot;,&quot;Bromeliaceae&quot;,&quot;Burseraceae&quot;,&quot;Cactineae&quot;,&quot;Calophyllaceae&quot;,&quot;Calycanthaceae&quot;,&quot;Campanulaceae&quot;,&quot;Cannabaceae&quot;,&quot;Caprifoliaceae&quot;,&quot;Caricaceae&quot;,&quot;Caryocaraceae&quot;,&quot;Caryophyllaceae&quot;,&quot;Casuarinaceae&quot;,&quot;Celastraceae&quot;,&quot;Cephalotaceae&quot;,&quot;Ceratophceae&quot;,&quot;Chenopodiaceae&quot;,&quot;Circaeasteraceae&quot;,&quot;Cleomaceae&quot;,&quot;Clethraceae&quot;,&quot;Convolvulaceae&quot;,&quot;Crassulaceae&quot;,&quot;Cucurbitaceae&quot;,&quot;Cupressaceae&quot;,&quot;Cyperaceae&quot;,&quot;Datiscaceae&quot;,&quot;Dioscoreaceae&quot;,&quot;Ditrichaceae&quot;,&quot;Droseraceae&quot;,&quot;Ebenaceae&quot;,&quot;Elaeocarpaceae&quot;,&quot;Ericaceae&quot;,&quot;Eucommiaceae&quot;,&quot;Euphorbiaceae&quot;,&quot;Fabaceae&quot;,&quot;Fagaceae&quot;,&quot;Fontinalaceae&quot;,&quot;Funariaceae&quot;,&quot;Gelsemiaceae&quot;,&quot;Gesneriaceae&quot;,&quot;Ginkgoaceae&quot;,&quot;Gnetaceae&quot;,&quot;Hamamelidaceae&quot;,&quot;Hydrangeaceae&quot;,&quot;Hylocomiaceae&quot;,&quot;Hypericaceae&quot;,&quot;Hypnaceae&quot;,&quot;Icacinaceae&quot;,&quot;Isoetaceae&quot;,&quot;Juglandaceae&quot;,&quot;Kewaceae&quot;,&quot;Lamiaceae&quot;,&quot;Lauraceae&quot;,&quot;Lemna&quot;,&quot;Lentibulariaceae&quot;,&quot;Limeaceae&quot;,&quot;Linaceae&quot;,&quot;Linderniaceae&quot;,&quot;Lythraceae&quot;,&quot;Macarthuriaceae&quot;,&quot;Magnoliaceae&quot;,&quot;Malvaceae&quot;,&quot;Marchantiaceae&quot;,&quot;Meliaceae&quot;,&quot;Microteaceae&quot;,&quot;Molluginaceae&quot;,&quot;Moraceae&quot;,&quot;Moringaceae&quot;,&quot;Musaceae&quot;,&quot;Myricaceae&quot;,&quot;Myrtaceae&quot;,&quot;Nelumbonaceae&quot;,&quot;Nymphaeaceae&quot;,&quot;Nyssaceae&quot;,&quot;Olacaceae&quot;,&quot;Oleaceae&quot;,&quot;Orchidaceae&quot;,&quot;Orobanchaceae&quot;,&quot;Oxalidaceae&quot;,&quot;Paeoniaaceae&quot;,&quot;Papaveraceae&quot;,&quot;Passifloraceae&quot;,&quot;Pedaliaceae&quot;,&quot;Phrymaceae&quot;,&quot;Phytolaccaceae&quot;,&quot;Pinaceae&quot;,&quot;Piperaceae&quot;,&quot;Plantaginaceae&quot;,&quot;Poaceae&quot;,&quot;Podostemaceae&quot;,&quot;Polygonaceae&quot;,&quot;Pontederiaceae&quot;,&quot;Pottiaceae&quot;,&quot;Primulaceae&quot;,&quot;Proteaceae&quot;,&quot;Pteridineae&quot;,&quot;Quillajaceae&quot;,&quot;Rafflesiaceae&quot;,&quot;Ranunculaceae&quot;,&quot;Rhamnaceae&quot;,&quot;Rhizophoraceae&quot;,&quot;Roridulaceae&quot;,&quot;Rosaceae&quot;,&quot;Rubiaceae&quot;,&quot;Rutaceae&quot;,&quot;Salicaceae&quot;,&quot;Salviniaceae&quot;,&quot;Santalaceae&quot;,&quot;Sapindaceae&quot;,&quot;Sapotaceae&quot;,&quot;Selaginellaceae&quot;,&quot;Simmondsiaceae&quot;,&quot;Solanaceae&quot;,&quot;Sphagnaceae&quot;,&quot;Tapisciaceae&quot;,&quot;Theaceae&quot;,&quot;Thymelaeaceae&quot;,&quot;Trochodendraceae&quot;,&quot;Ulmaceae&quot;,&quot;Urticaceae&quot;,&quot;Velloziaceae&quot;,&quot;Violaceae&quot;,&quot;Vitaceae&quot;,&quot;Zingiberaceae&quot;,&quot;Zosteraceae&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"49\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"99.3\" data-scale=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.041389\" data-max=\"46306.506384\" data-scale=\"6\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;2n&quot;,&quot;3n&quot;,&quot;4n&quot;,&quot;6n&quot;,&quot;8n&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;Cultivated&quot;,&quot;Domesticated&quot;,&quot;Feral&quot;,&quot;Natural commodity&quot;,&quot;Wild&quot;,&quot;Wild relative&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","fillContainer":true,"data":[["Acanthaceae","Acanthaceae","Acanthaceae","Acanthaceae","Actinidia","Actinidia","Actinidiaceae","Actinidiaceae","Amaranthaceae","Amaranthaceae","Amaranthaceae","Amaranthaceae","Amaranthaceae","Amaranthaceae","Amaranthaceae","Amaryllidaceae","Amborellaceae","Anacardiaceae","Anacardiaceae","Anacardiaceae","Anacardiaceae","Anthocerotaceae","Anthocerotaceae","Anthocerotaceae","Apiaceae","Apiaceae","Apiaceae","Apiaceae","Apiaceae","Apiaceae","Apiaceae","Apiaceae","Apocynaceae","Apocynaceae","Apocynaceae","Apocynaceae","Araceae","Araceae","Araceae","Araceae","Arecaceae","Arecaceae","Arecaceae","Arecaceae","Arecaceae","Arecaceae","Asparagaceae","Asparagaceae","Asparagaceae","Asphodelaceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Asteraceae","Begoniaceae","Berberidaceae","Betulaceae","Betulaceae","Betulaceae","Betulaceae","Betulaceae","Betulaceae","Betulaceae","Bignoniaceae","Bignoniaceae","Bignoniaceae","Boraginaceae","Boraginaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Brassicaceae","Bromeliaceae","Bromeliaceae","Burseraceae","Cactineae","Cactineae","Cactineae","Cactineae","Cactineae","Cactineae","Calophyllaceae","Calycanthaceae","Calycanthaceae","Campanulaceae","Campanulaceae","Cannabaceae","Cannabaceae","Cannabaceae","Cannabaceae","Caprifoliaceae","Caricaceae","Caryocaraceae","Caryophyllaceae","Caryophyllaceae","Caryophyllaceae","Caryophyllaceae","Caryophyllaceae","Casuarinaceae","Casuarinaceae","Celastraceae","Cephalotaceae","Ceratophceae","Chenopodiaceae","Chenopodiaceae","Chenopodiaceae","Chenopodiaceae","Chenopodiaceae","Chenopodiaceae","Circaeasteraceae","Cleomaceae","Clethraceae","Convolvulaceae","Convolvulaceae","Convolvulaceae","Convolvulaceae","Convolvulaceae","Convolvulaceae","Convolvulaceae","Crassulaceae","Crassulaceae","Crassulaceae","Crassulaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cucurbitaceae","Cupressaceae","Cupressaceae","Cyperaceae","Cyperaceae","Datiscaceae","Dioscoreaceae","Dioscoreaceae","Dioscoreaceae","Dioscoreaceae","Dioscoreaceae","Dioscoreaceae","Dioscoreaceae","Ditrichaceae","Droseraceae","Droseraceae","Droseraceae","Droseraceae","Ebenaceae","Ebenaceae","Elaeocarpaceae","Ericaceae","Ericaceae","Ericaceae","Ericaceae","Ericaceae","Ericaceae","Ericaceae","Eucommiaceae","Euphorbiaceae","Euphorbiaceae","Euphorbiaceae","Euphorbiaceae","Euphorbiaceae","Euphorbiaceae","Euphorbiaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fabaceae","Fagaceae","Fagaceae","Fagaceae","Fagaceae","Fagaceae","Fagaceae","Fagaceae","Fontinalaceae","Funariaceae","Gelsemiaceae","Gelsemiaceae","Gesneriaceae","Gesneriaceae","Ginkgoaceae","Gnetaceae","Hamamelidaceae","Hydrangeaceae","Hylocomiaceae","Hylocomiaceae","Hypericaceae","Hypnaceae","Icacinaceae","Isoetaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Juglandaceae","Kewaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lamiaceae","Lauraceae","Lauraceae","Lauraceae","Lauraceae","Lemna","Lentibulariaceae","Lentibulariaceae","Lentibulariaceae","Limeaceae","Linaceae","Linaceae","Linderniaceae","Linderniaceae","Lythraceae","Lythraceae","Lythraceae","Macarthuriaceae","Magnoliaceae","Magnoliaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Malvaceae","Marchantiaceae","Marchantiaceae","Marchantiaceae","Meliaceae","Meliaceae","Microteaceae","Molluginaceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moraceae","Moringaceae","Musaceae","Musaceae","Musaceae","Musaceae","Musaceae","Myricaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Myrtaceae","Nelumbonaceae","Nymphaeaceae","Nymphaeaceae","Nymphaeaceae","Nyssaceae","Nyssaceae","Nyssaceae","Nyssaceae","Olacaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Oleaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orchidaceae","Orobanchaceae","Orobanchaceae","Orobanchaceae","Orobanchaceae","Oxalidaceae","Paeoniaaceae","Papaveraceae","Papaveraceae","Papaveraceae","Passifloraceae","Pedaliaceae","Phrymaceae","Phrymaceae","Phytolaccaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Pinaceae","Piperaceae","Plantaginaceae","Plantaginaceae","Plantaginaceae","Plantaginaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Poaceae","Podostemaceae","Polygonaceae","Polygonaceae","Polygonaceae","Polygonaceae","Pontederiaceae","Pottiaceae","Primulaceae","Primulaceae","Primulaceae","Proteaceae","Proteaceae","Pteridineae","Quillajaceae","Rafflesiaceae","Rafflesiaceae","Ranunculaceae","Ranunculaceae","Ranunculaceae","Ranunculaceae","Rhamnaceae","Rhamnaceae","Rhamnaceae","Rhizophoraceae","Rhizophoraceae","Roridulaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rosaceae","Rubiaceae","Rubiaceae","Rubiaceae","Rubiaceae","Rubiaceae","Rubiaceae","Rubiaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Rutaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salicaceae","Salviniaceae","Salviniaceae","Santalaceae","Sapindaceae","Sapindaceae","Sapindaceae","Sapindaceae","Sapotaceae","Selaginellaceae","Selaginellaceae","Selaginellaceae","Simmondsiaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Solanaceae","Sphagnaceae","Tapisciaceae","Theaceae","Thymelaeaceae","Thymelaeaceae","Trochodendraceae","Trochodendraceae","Ulmaceae","Urticaceae","Velloziaceae","Violaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Vitaceae","Zingiberaceae","Zosteraceae","Zosteraceae","Zosteraceae","NA"],["Andrographis paniculata","Avicennia marina","Ruellia speciosa","Strobilanthes cusia","Actinidia chinensis","Actinidia eriantha","Actinidia rufa","Actinidia eriantha","Amaranthus hypochondriacus","Amaranthus tuberculatus","Amaranthus hybridus","Amaranthus palmeri","Atriplex hortensis","Kochia scoparia","Suaeda aralocaspica","Allium sativum","Amborella trichopoda","Mangifera indica","Pistacia vera","Toxicodendron radicans","Sclerocarya birrea","Anthoceros angustus","Anthoceros agrestis","Anthoceros punctatus","Centella asiatica","Daucus carota","Apium graveolens","Oenanthe javanica","Panax notoginseng","Foeniculum vulgare","Coriandrum sativum","Panax ginseng","Rhazya stricta","Calotropis procera","Catharanthus roseus","Asclepias syriaca","Spirodela intermedia","Spirodela polyrhiza","Wolffia australiana","Colocasia esculenta","Phoenix dactylifera","Cocos nucifera","Elaeis guineensis","Calamus simplicifolius","Elaeis oleifera","Daemonorops jenkinsiana","Asparagus setaceus","Asparagus officinalis","Dracaena cambodiana","Aloe vera","Cynara cardunculus","Erigeron canadensis","Artemisia annua","Helianthus annuus","Chrysanthemum seticuspe","Mikania micrantha","Lactuca saligna","Stevia rebaudiana","Lactuca sativa","Carthamus tinctorius","Silybum marianum","Silphium perfoliatum","Chrysanthemum nankingense","Conyza canadensis","Erigeron breviscapus","Tanacetum cenerariifolium","Taraxacum kok-saghyz","Begonia fuchsioides","Berberis thunbergii","Betula pendula","Carpinus fangiana","Corylus heterophylla","Alnus glutinosa","Betula nana","Ostrya chinensis","Ostrya rehderiana","Jacaranda copaia","Handroanthus guayacan","Handroanthus impetiginosus","Echium plantagineum","Lithospermum erythrorhizon","Boechera retrofracta","Camelina sativa","Crucihimalaya himalaica","Turritis glabra","Raphanus sativus","Sisymbrium altissimum","Brassica rapa","Isatis tinctoria","Arabidopsis lyrata","Capsella rubella","Conringia planisiliqua","Eutrema heterophyllum","Eutrema salsugineum","Thlaspi arvense","Arabidopsis thaliana","Brassica juncea","Brassica oleracea","Erysimum cheiranthoides","Euclidium syriacum","Sinapis alba","Anastatica hierochuntica","Pseudoturritis turrita","Aethionema arabicum","Eutrema yunnanense","Lepidium aucheri","Arabis alpina","Brassica nigra","Cardamine resedifolia","Microthlaspi erraticum","Kernera saxatilis","Nasturtium officinale","Schrenkiella parvula","Arabidopsis arenosa","Arabis nemorensis","Raparia bulbosa","Sisymbrium irio","Leavenworthia alabamica","Arabidopsis halleri","Arabis montbretiana","Brassica napus","Noccaea caerulescens","Lepidium africanum","Boechera stricta","Raphanus raphanistrum","Capsella bursa-pastoris","Crambe hispanica","Barbarea vulgaris","Macropodium nivale","Aurinia saxatilis","Iberis pinnata","Erysimum cheiri","Odontarrhena argentea","Erucastrum elatum","Biscutella laevigata","Arabis nordmanniana","Diplotaxis tenuifolia","Physaria fendleri","Isatis lusitanica","Iberis amara","Erysimum pusillum","Biscutella auriculata","Boechera puberula","Brassica cretica","Physaria acutifolia","Cochlearia officinalis","Heliophila coronopifolia","Lepidium campestre","Physaria ovalifolia","Noccaea goesingensis","Eruca vesicaria","Capsella grandiflora","Capsella orientalis","Cardamine hirsuta","Draba nivalis","Isatis indigotica","Lepidium meyenii","Lobularia maritima","Megacarpaea delavayi","Pachycladon cheesemanii","Thellungiella parvula","Ananas comosus","Ananas bracteatus","Boswellia sacra","Carnegiea gigantea","Lophocereus schottii","Stenocereus thurberi","Pachycereus pringlei","Pereskia humboldtii","Selenicereus undatus","Mesua ferrea","Chimonanthus salicifolius","Chimonanthus praecox","Codonopsis lanceolata","Platycodon grandiflorus","Parasponia andersonii","Trema orientale","Cannabis sativa","Humulus lupulus","Lonicera japonica","Carica papaya","Caryocar brasiliense","Dianthus caryophyllus","Silene noctiflora","Corrigiola litoralis","Silene latifolia","Spergula arvensis","Casuarina glauca","Casuarina equisetifolia","Tripterygium wilfordii","Cephalotus follicularis","Ceratophyllum demersum","Chenopodium quinoa","Chenopodium suecicum","Spinacia oleracea","Beta vulgaris","Beta patula","Bassia scoparia","Kingdonia uniflora","Tarenaya hassleriana","Clethra arborea","Ipomoea triloba","Ipomoea trifida","Ipomoea nil","Cuscuta campestris","Cuscuta australis","Ipomoea batatas","Ipomoea purpurea","Sedum album","Kalanchoe fedtschenkoi","Kalanchoe laxiflora","Rhodiola crenulata","Cucurbita moschata","Cucurbita maxima","Cucurbita pepo","Cucumis melo","Citrullus lanatus","Luffa aegyptiaca","Cucumis sativus","Momordica charantia","Lagenaria siceraria","Luffa acutangula","Cucurbita argyrosperma","Benincasa hispida","Luffa cylindrica","Siraitia grosvenorii","Trichosanthes anguina","Sequoia sempervirens","Sequoiadendron giganteum","Carex littledalei","Kobresia littledalei","Datisca glomerata","Dioscorea dumetorum","Trichopus zeylanicus","Dioscorea zingiberensis","Dioscorea cayenensis","Dioscorea alata","Dioscorea sansibarensis","Dioscorea rotundata","Ceratodon purpureus","Drosera capensis","Aldrovanda vesiculos","Dionaea muscipula","Drosera spatulata","Diospyros lotus","Diospyros oleifera","Aristotelia chilensis","Rhododendron simsii","Rhododendron williamsianum","Vaccinium corymbosum","Arbutus unedo","Vaccinium macrocarpon","Monotropa hypopitys","Rhododendron delavayi","Eucommia ulmoides","Ricinus communis","Manihot esculenta","Jatropha curcas","Hevea brasiliensis","Euphorbia esula","Mercurialis annus","Vernicia fordii","Amphicarpaea edgeworthii","Phaseolus lunatus","Medicago truncatula","Vigna unguiculata","Cercis canadensis","Arachis hypogaea","Abrus precatorius","Cicer reticulatum","Phaseolus vulgaris","Senna tora","Glycine max","Lupinus albus","Aeschynomene evenia","Glycine soja","Vigna angularis","Vigna radiata","Chamaecrista fasciculata","Glycine tomentella","Nissolia schottii","Prosopis alba","Arachis duranensis","Spatholobus suberectus","Trifolium subterraneum","Glycine latifolia","Mimosa pudica","Arachis stenosperma","Vigna mungo","Cicer arietinum","Cicer echinospermum","Lupinus angustifolius","Arachis monticola","Trifolium repens","Trifolium occidentale","Cajanus cajan","Arachis ipaensis","Mucuna pruriens","Pisum sativum","Vicia faba","Trifolium pratense","Lotus japonicus","Vachellia collinsii","Phaseolus coccineus","Eperua falcata","Dipteryx alata","Trifolium medium","Ammopiptanthus nanus","Dalbergia odorifera","Faidherbia albida","Glygyrrhiza uralensis","Lablab purpureus","Medicago polymorpha","Medicago sativa","Vigna marina","Vigna subterranea","Quercus mongolica","Fagus crenata","Quercus robur","Quercus suber","Castanea mollissima","Fagus sylvatica","Quercus lobata","Fontinalis antipyretica","Physcomitrium patens","Gelsemium elegans","Gelsemium sempervirens","Primulina huaijiensis","Dorcoceras hygrometricum","Ginko biloba","Gnetum monatum","Rhodoleia championii","Hydrangea macrophylla","Pleurozium schreberi","Pleurozium schreberi","Hypericum perforatum","Calohypnum plumiforme","Nothapodytes nimmoniana","Isoetes engelmannii","Juglans mandshurica","Carya cathayensis","Carya illinoinensis","Juglans regia","Juglans microcarpa","Juglans nigra","Juglans hindsii","Juglans sigillata","Pterocarya stenoptera","Juglans cathayensis","Kewa caespitosa","Salvia splendens","Salvia miltiorrhiza","Scutellaria baicalensis","Perilla citriodora","Tectona grandis","Pogostemon cablin","Ocimum tenuiflorum","Mentha longifolia","Callicarpa americana","Ocimum basilicum","Ocimum sanctum","Origanum majorana","Origanum vulgare","Pogostemon cablin","Rosmarinus officinalis","Scutellaria barbata","Cinnamomum micranthum","Litsea cubeba","Persea americana","Cinnamomum kanehirae","NA","Utricularia gibba","Utricularia reniformis","Genlisea aurea","Limeum aethiopicum","Linum usitatissimum","Linum bienne","Lindernia brevidens","Lindernia subracemosa","Punica granatum","Sonneratia caseolaris","Sonneratia alba","Macarthuria australis","Liriodendron chinense","Magnolia ashei","Gossypium raimondii","Kokia drynarioides","Theobroma cacao","Gossypium darwinii","Gossypium mustelinum","Gossypium hirsutum","Gossypium barbadense","Gossypium tomentosum","Gossypioides kirkii","Durio zibethinus","Hibiscus syriacus","Gossypium turneri","Corchorus capsularis","Gossypium schwendimanii","Gossypium arboreum","Gossypium gossypioides","Gossypium australe","Gossypium thurberi","Gossypium davidsonii","Gossypium trilobum","Gossypium klotzschianum","Corchorus olitorius","Gossypium longicalyx","Gossypium klotzschianum","Gossypium lobatum","Herrania umbratica","Gossypium harknessii","Gossypium armourianum","Gossypium aridum","Bombax ceiba","Gossypium herbaceum","Hibiscus cannabinus","Marchantia polymorpha","Marchantia paleacea","Marchantia inflexa","Azadirachta indica","Toona sinensis","Microtea debilis","Pharnaceum exiguum","Ficus erecta","Morus alba","Morus notabilis","Ficus carica","Artocarpus camansi","Artocarpus altilis","Artocarpus heterophyllus","Broussonetia papyrifera","Ficus hispida","Ficus microcarpa","Moringa oleifera","Musa acuminata","Musa schizocarpa","Musa itinerans","Musa balbisiana","Ensete ventricosum","Morella rubra","Eucalyptus melliodora","Eucalyptus pauciflora","Eucalyptus brandiana","Metrosideros polymorpha","Corymbia maculata","Eucalyptus grandis","Corymbia calophylla","Corymbia citriodora","Eucalyptus guilfoylei","Angophora floribunda","Eucalyptus erythrocorys","Eucalyptus pumila","Eucalyptus salubris","Eucalyptus regnans","Eucalyptus tenuipes","Eucalyptus camaldulensis","Eucalyptus virginea","Psidium guajava","Eucalyptus dawsonii","Eucalyptus microcorys","Eucalyptus cloeziana","Eucalyptus viminalis","Eucalyptus victrix","Eucalyptus caleyi","Eucalyptus globulus","Rhodamnia argentea","Syzygium oleosum","Eucalyptus marginata","Eucalyptus coolabah","Eugenia uniflora","Eucalyptus albens","Eucalyptus decipiens","Eucalyptus sideroxylon","Leptospermum scoparium","Nelumbo nucifera","Nymphaea colorata","Nymphaea thermarum","Euryale ferox","Nyssa sinensis","Camptotheca acuminata","Davidia involucrata","Nyssa yunnanensis","Malania oleifera","Fraxinus quadrangulata","Forsythia suspensa","Olea europaea","Fraxinus excelsior","Fraxinus mandshurica","Fraxinus ornus","Fraxinus gooddingii","Fraxinus cuspidata","Fraxinus pennsylvanica","Fraxinus anomala","Fraxinus albicans","Fraxinus platypoda","Fraxinus floribunda","Fraxinus baroniana","Fraxinus griffithii","NA","Fraxinus nigra","Fraxinus americana","Fraxinus greggii","Fraxinus xanthoxyloides","Fraxinus angustifolia","Fraxinus dipetala","Fraxinus latifolia","Fraxinus velutina","Fraxinus paxiana","Fraxinus sieboldiana","Phalaenopsis aphrodite","Apostasia shenzhenica","Dendrobium catenatum","Vanilla planifolia","Phalaenopsis equestris","Gastrodia elata","Phalaenopsis hybrid","Dendrobium officinale","Striga asiatica","Phtheirospermum japonicum","Euphrasia arctica","Rehmannia glutinosa","Averrhoa carambola","Paeonia suffruticosa","Macleaya cordata","Papaver somniferum","Eschscholzia californica","Passiflora edulis","Sesamum indicum","Erythranthe guttata","Erythranthe luteus","Phytolacca americana","Larix kaempferi","Pseudotsuga menziesii","Pinus taeda","Picea engelmannii","Larix sibirica","Picea sitchensis","Picea glauca","Picea abies","Abies alba","Pinus lambertiana","Piper nigrum","Penstemon barbatus","Penstemon centranthifolius","Penstemon grinnellii","Antirrhinum majus","Digitaria exilis","Oryza sativa","Setaria viridis","Oryza nivara","Panicum miliaceum","Brachypodium distachyon","Setaria italica","Echinochloa crus-galli","Oryza glumipatula","Panicum hallii","Oropetium thomaeum","Oryza coarctata","Sorghum bicolor","Oryza officinalis","Triticum dicoccoides","Zoysia japonica","Miscanthus lutarioriparius","Leersia perrieri","Oryza punctata","Zoysia pacifica","Eleusine indica","Eragrostis curvula","Eragrostis nindensis","Oryza barthii","Urochloa ruziziensis","Aegilops tauschii","Oryza meyeriana","Phyllostachys edulis","Dactylis glomerata","Raddia distichophylla","Eragrostis tef","Oryza brachyantha","Oryza rufipogon","Chrysopogon serrulatus","Hyparrhenia diplandra","Zoysia matrella","Coix aquatica","Coix lacryma-jobi","Zizania latifolia","Zea mays","Cenchrus americanus","Dichanthelium oligosanthes","Alloteropsis semialata","Oryza meridionalis","Oryza longistaminata","Saccharum spontaneum","Oryza glaberrima","Puccinellia tenuiflora","Eleusine coracana","Hordeum pubiflorum","Saccharum hybrid","Hordeum vulgare","Miscanthus sacchariflorus","Sporobolus alterniflorus","Hordeum bulbosum","Lolium perenne","Avena atlantica","Avena eriantha","Bonia amplexicaulis","Brachypodium hybridum","Brachypodium stacei","Cenchrus purpureus","Cleistogenes songorica","Olyra latifolia","Oryza eichingeri","Oryza granulata","Oryza indica","Oryza rhizomatis","Panicum virgantum","Pennisetum glaucum","Raddia guianensis","Secale cereale","Thinopyrum elongatum","Triticum aestivum","Triticum turgidum","Triticum urartu","Cladopus chinensis","Fagopyrum esculentum","Fagopyrum tataricum","Polygonum cuspidatum","Rumex hastatulus","Pontederia paniculata","Syntrichia caninervis","Primula veris","Embelia ribes","Primula vulgaris","Macadamia integrifolia","Macadamia jansenii","Ceratopteris richardii","Quillaja saponaria","Rafflesia leonardi","Sapria himalayana","Aquilegia coerulea","Coptis chinensis","Thalictrum thalictroides","Aquilegia oxysepala","Ochetophila trinervis","Rhamnella rubrinervis","Ziziphus jujuba","Rhizophora apiculata","Kandelia obovata","Roridula gorgonias","Prunus persica","Prunus yedoensis","Fragaria iinumae","Prunus salicina","Prunus avium","Fragaria vesca","Malus domestica","Rosa chinensis","Prunus mume","Prunus dulcis","Geum urbanum","Prunus armeniaca","Malus baccata","Purshia tridentata","Dryas drummondii","Fragaria nilgerrensis","Pyrus ussuriensis","Rosa multiflora","Pyrus bretschneideri","Rosa lucieae","Rosa damascena","Cydonia oblonga","Fragaria nipponica","Fragaria nubicola","Fragaria ananassa","Fragaria orientalis","Cerasus serrulata","Eriobotrya japonica","Fragaria viridis","Gillenia trifoliata","Malus sylvestris","Potintilla micrantha","Prunus domestica","Pyrus communis","Rosa roxburghii","Rubus occidentalis","Coffea eugenioides","Coffea canephora","Gardenia jasminoides","Coffea arabica","Galium porrigens","Chiococca alba","Ophiorrhiza pumila","Citrus cavaleriei","Citrus sinensis","Citrus maxima","Citrus reticulata","Atalantia buxifolia","Citrus medica","Citrus clementina","Citrus hindsii","Citrus unshiu","Citrus paradisi","Citrus grandis","Citrus ichangensis","Poncirus trifoliata","Salix dunnii","Populus ilicifolia","Populus alba","Populus trichocarpa","Salix brachista","Populus deltoides","Populus euphratica","Populus simonii","Populus davidiana","Populus glandulosa","Populus pruinosa","Populus tremula","Populus tremuloides","Salix purpurea","Salix suchowensis","Salix viminalis","Azolla filiculoides","Salvinia cucullata","Santalum album","Acer yangbiense","Xanthoceras sorbifolium","Acer truncatum","Dimocarpus longan","Argania spinosa","Selaginella moellendorffii","Selaginella tamariscina","Selaginella kraussiana","Simmondsia chinensis","Solanum lycopersicum","Solanum verrucosum","Solanum pimpinellifolium","Solanum tuberosum","Solanum pennellii","Solanum pinnatisectum","Nicotiana attenuata","Jaltomata sinuosa","Nicotiana tabacum","Datura stramonium","Nicotiana rustica","Capsicum baccatum","Nicotiana knightiana","Nicotiana obtusifolia","Capsicum chinense","Nicotiana sylvestris","Capsicum annuum","Nicotiana paniculata","Nicotiana tomentosiformis","Solanum habrochaites","Nicotiana undulata","Solanum arcanum","Solanum stenotomum","Solanum chilense","Solanum melongena","Petunia axillaris","Solanum commersonii","Nicotiana glauca","Solanum clarkiae","Nicotiana otophora","Solanum phureja","Solanum bukasovii","Solanum juzepczukii","Solanum ahanhuiri","Solanum chaucha","Solanum curtilobum","Solanum americanum","Nicotiana benthamiana","Petunia inflata","Solanum aethiopicum","Solanum chacoense","Sphagnum fallax","Tapiscia sinensis","Camellia sinensis","Aquilaria sinensis","Aquilaria agallochum","Tetracentron sinense","Trochodendron aralioides","Ulmus americana","Boehmeria nivea","Xerophyta viscosa","Viola pubescens","Vitis riparia","Vitis labruscana","Vitis vinifera","Vitis labrusca","Vitis amurensis","Vitis rotundifolia","Cissus quadrangularis","Vitis cinerea","Vitis aestivalis","Zingiber officinale","Zostera marina","Zostera nigricaulis","Zostera muelleri","NA"],[2,3,1,"NA",2,1,1,1,1,1,"NA","NA","NA","NA",1,1,2,1,2,1,1,1,2,1,1,2,2,1,1,1,1,2,1,1,1,1,2,6,2,3,5,3,4,1,2,1,1,2,1,1,2,2,2,2,1,1,1,1,5,1,1,1,1,"NA",1,"NA","NA",1,1,1,1,1,1,1,1,"NA",1,1,1,1,"NA",1,3,1,2,6,1,6,3,2,2,1,1,3,1,31,2,5,1,1,1,1,2,1,1,1,3,2,1,1,1,1,1,2,1,1,1,1,2,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,"NA","NA",1,1,1,"NA","NA","NA","NA",1,4,"NA",1,1,1,1,1,1,"NA",1,1,1,1,1,1,1,13,1,"NA",2,1,1,1,1,2,1,1,1,2,1,"NA",4,1,3,9,1,1,1,2,"NA",2,4,2,1,1,2,1,1,1,"NA",1,2,2,2,8,2,2,15,4,3,1,1,2,"NA",1,"NA",1,1,1,"NA",1,1,1,1,5,1,1,"NA",2,1,"NA","NA","NA",2,2,2,1,1,1,1,1,1,"NA","NA",2,4,5,6,2,"NA",2,1,1,7,3,1,5,2,2,6,1,14,2,1,5,3,3,1,1,1,2,4,1,2,1,1,1,1,6,1,4,1,1,1,4,2,1,2,1,3,1,1,1,1,1,1,1,1,1,"NA",1,"NA","NA",1,1,1,1,2,2,2,1,"NA",1,2,"NA",1,1,1,2,1,1,2,1,1,1,"NA",1,1,1,1,1,4,2,2,1,1,1,1,1,1,1,1,1,2,1,2,1,1,"NA","NA","NA","NA","NA","NA","NA",1,1,3,1,"NA",1,1,1,1,4,1,1,1,5,1,2,1,1,1,4,1,3,1,1,4,3,1,2,2,2,1,1,1,3,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,"NA",1,2,1,1,1,"NA",1,1,1,2,2,2,1,1,"NA",1,1,1,1,3,1,1,1,4,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,"NA",6,3,1,"NA",1,1,1,"NA","NA",1,1,4,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,2,1,1,1,1,1,1,1,2,"NA",1,3,1,1,5,2,"NA","NA",1,1,1,1,1,1,2,1,1,1,1,1,1,1,"NA",2,49,3,2,2,5,3,2,1,1,1,1,5,1,5,1,1,1,1,1,1,1,1,4,2,2,2,1,2,1,1,2,2,1,1,1,1,1,1,42,1,1,1,2,3,2,1,1,1,1,3,5,1,1,1,1,1,1,1,1,"NA",1,"NA",1,1,1,"NA","NA","NA",1,1,3,1,22,1,2,"NA",2,2,"NA","NA",1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,3,2,1,"NA",6,3,2,1,6,2,4,"NA",2,3,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,"NA",2,1,"NA","NA",1,"NA",1,1,3,2,1,1,2,1,"NA","NA",1,3,1,1,1,1,2,1,2,1,"NA","NA","NA",1,1,2,2,1,3,2,1,1,2,"NA","NA","NA","NA",2,"NA",1,1,3,1,1,1,1,1,2,1,1,1,6,19,3,13,4,2,3,1,5,2,1,1,1,1,1,2,7,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,6,1,"NA",1,"NA",1,"NA",3,2,1,1,1,1,2,1,1,2,1,9,1,1,1,1,1,1,1,1,1,1,"NA"],[96.3,94.9,45.6,"NA",93.6,"NA",89,85.4,80.8,0,"NA","NA","NA","NA","NA","NA",90.5,97.4,95,75.6,"NA",77.2,"NA","NA",95.9,95.1,93.7,89.9,85.4,71.6,"NA","NA",95.3,82.5,80.8,76.9,96.1,86,77.8,74.1,92.1,90.1,87.9,83.3,57.6,"NA",84.4,81.5,"NA","NA",95.3,95.2,93,92.2,92,89,88.9,80.7,70.3,68.3,32.4,0,"NA","NA","NA","NA","NA",94.6,90.3,95.3,93.8,91,79.4,75.7,"NA","NA",95.4,86.7,85.4,95.6,"NA",99.3,99.2,99.2,99.2,99.1,99.1,99,99,98.9,98.9,98.9,98.9,98.9,98.9,98.8,98.7,98.7,98.7,98.7,98.7,98.6,98.6,98.5,98.5,98.5,98.4,98.4,98.4,98.4,98.3,98.3,98.3,97.9,97.9,97.8,97.6,97.5,97.4,97.4,97.4,97.1,96.4,96.2,95.9,95.6,94.7,94.3,93.5,92.9,91.7,91.6,91.5,90.4,89.5,86.9,82.4,79.6,75.2,75,73.3,72.5,67.9,62.1,46.9,45.3,44.9,33.8,27.1,12,1.2,"NA","NA","NA","NA","NA","NA","NA","NA","NA","NA",93.3,"NA",48.1,87.3,60.3,52.6,40.7,28.8,"NA",92.4,88.2,"NA",95.5,93.3,97.1,96.9,95.7,87.7,"NA",73.7,70.3,94.8,88.8,81.2,60.3,0.8,96.4,95.6,97.4,92.5,"NA",96.3,95.5,94,93.8,93,61.4,88,98.6,"NA",97,96.6,95.6,89,85.3,69.5,12.5,91.7,91.5,"NA","NA",96.9,96.7,96.2,96.1,95.9,95.6,95.5,95.4,94.9,94.1,93.7,93.2,"NA","NA","NA",42.8,"NA",87,"NA",96.5,94.7,94.5,94.1,92,83.4,0,"NA",79.5,88.9,"NA","NA","NA",90.5,"NA",26.9,93.7,87.2,74.3,62.6,53.6,19.8,"NA","NA",94.8,92.9,87.3,84,35.2,"NA","NA",97.4,96.9,96.8,96.8,96.7,96.6,96.5,96.5,96.3,96.3,96.2,96.2,96.1,96,96,96,95.9,95.7,95.7,95.7,95.6,95.6,95.6,95.5,95.4,95.1,95.1,95,95,94.3,94.2,94.1,93.7,93.6,92.2,91.1,90.9,89.8,87.9,86.4,84.1,78.8,20.8,11.8,3.2,"NA","NA","NA","NA","NA","NA","NA","NA","NA",92.4,89.5,89.4,89.3,89,85.9,"NA","NA",80.1,"NA","NA",94.2,83.9,"NA",81,0.2,82.9,52.4,"NA",89,"NA",0,59.7,96,95.6,95.2,95.1,95,93.9,92.7,91.6,90.2,82.9,80.1,96.7,96.5,96.5,96.1,92.3,91.8,70,51.8,"NA","NA","NA","NA","NA","NA","NA","NA",91.3,83.4,81.4,"NA","NA",91.6,89.5,73,4.6,96.2,94.9,96.5,96.5,96.7,96.2,96,31.8,84.5,4.1,97.7,97.7,97.5,97.3,97.2,97.1,97,97,96.8,96.6,95.8,95.6,95.5,95.5,95.1,95.1,95,94.7,94.2,94.2,94,93.1,92.8,92,91.5,90.4,90.1,89.8,89.1,"NA","NA","NA",77.2,77,47.3,66.9,"NA",30.8,88,96.8,95.6,95,90.5,42.5,"NA","NA","NA","NA","NA",79.9,95.1,94.2,94,92.6,79.1,89.3,98.3,97.2,97.1,97.1,96.9,96.9,96.6,96.5,96.5,96.3,96.1,96,96,95.8,95.8,95.7,95.7,95.7,95.6,95.6,95.5,95.5,95.3,95,94.8,94.6,94.3,94,93.1,0.3,"NA","NA","NA","NA",83.9,88.5,83.5,"NA",89.7,"NA","NA","NA","NA",94.4,93.7,93.5,88.1,87.5,87,86.8,86.5,84,81.7,78.8,78.7,74.6,73.4,72.8,72.3,68.3,68,67.3,65.3,63.5,62,60.8,59.6,56.4,51.4,85.1,84.8,80.6,78.9,78.3,63,60.4,"NA",93.2,91,79.3,54.9,"NA","NA",96.1,94.4,86.7,35.7,96.1,95.7,"NA","NA",39.7,37.1,31.4,26.8,23.2,22.5,21.8,19.3,"NA","NA","NA",93,0,0,"NA",96.2,96.1,96.1,95.9,95.7,95.5,95.4,95.3,95.2,95.1,95,94.9,94.9,94.7,94.6,94.6,94.3,94.2,94.2,93.8,93.5,93.5,93.2,93.1,92.6,92.5,92.2,92.2,91.8,91.8,90.8,90.2,90.2,90,89.6,89.3,88.9,88.7,87.9,87.7,86.5,85.8,82.7,82.4,82.2,82.2,81.7,81.6,80.9,74.4,69.8,61.1,52,34.1,30.5,29.2,"NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA",92.1,86.6,"NA","NA",89.4,"NA",82.5,52.4,0.3,87.1,"NA",22.8,56.6,0.1,"NA",96.2,89.8,83.7,"NA",96.6,96.1,95.9,95.5,"NA","NA",97.6,97.4,97.2,97.2,96.6,96.5,96.5,96.5,96.3,96.1,95.9,95.8,93.7,93.7,92.8,92.7,89.4,88.6,85.5,83.8,69.5,61.5,36.8,33.8,28.1,11.5,"NA","NA","NA","NA","NA","NA","NA","NA","NA","NA",95.8,95.3,94.7,93.2,72.7,"NA","NA",97.7,97.6,97.5,97.5,97.4,97.4,97.1,96.9,94.8,58.9,"NA","NA","NA",97.1,96.8,96.7,96.6,96.6,96.5,96.5,96.5,88,"NA","NA","NA","NA","NA","NA","NA","NA","NA",22.3,96.9,96.2,"NA","NA",85.9,62,49.1,36.8,44.5,96.3,96.3,96.1,94.9,94.6,94.6,94.5,94,93,92.7,92.6,92.2,92.2,92.1,92,91.2,90.9,90.7,90.5,90.3,89.8,89.2,88.6,87.1,84.8,81.6,77.4,77.2,75.5,72.7,61.2,53,49.1,46.2,44.1,35.6,0.3,"NA","NA","NA","NA","NA","NA",86.2,95.7,95.1,89.9,"NA",79,95.3,89.9,79.5,93.5,93.3,91.8,89.3,87.6,83.7,61.2,40.2,27.5,52,86.3,83.7,77,"NA"],[86.899284,145.62634,252.161976,"NA",417.75593,"NA",495.040232,201.174998,108.781394,1.550999,503.8,421.8,1172,"NA",467,4312.5294,503.914054,110.64578,408.956202,149.58833,"NA",33.164044,129,139,120.041291,346.980953,2262.672659,382.827202,614.793913,318.978141,"NA",3500,82.75316,42.875269,168.408857,76.38074,162,43.446306,115.180651,674.512885,217.947609,643.840708,255.647576,586.657069,315.888319,1610,185.986215,837.162382,1120,13630,507.479476,122.258536,513.0089,2095.853742,786.385642,1279.044536,7104.246155,133.867767,678.984495,222.352588,464.229113,50.893282,3070,355,1520,7100,1180,117.849966,710.796861,404.885181,279.982444,104.260924,182.360989,174.098777,386,386,391.16861,212.639256,392.450102,99.113377,369.34,64.031868,170.216485,72.707352,53.48127,113.78874,57.194936,101.098294,82.559158,164.204751,121.852309,53.669821,108.048203,196.878562,103.031859,185.743185,234.945105,153.542086,48.88745,71.403018,338.333112,176.390159,100.268941,47.600548,121.162431,106.368886,740.18124,137.608387,121.200836,176.834619,46.421662,68.898949,40.305089,49.945439,155.127461,49.177451,61.646444,45.437744,54.277452,64.426676,250.104385,45.460672,72.473152,53.116618,82.398341,79.893793,98.437053,49.230355,97.005777,102.18714,222.812661,47.523289,58.78914,116.547701,107.956425,113.336191,136.997265,106.991444,65.887401,117.438778,58.781946,124.709536,59.316928,251.605306,66.385392,53.263967,96.009959,37.138603,95.838504,49.680054,0.351794,"NA","NA",225,278.48,305,750,264,899,"NA",140,108.882733,526,131.869493,310.989994,256.84659,275.208829,197.899819,132.700511,1580,194.778178,239.158849,778.71,861.116092,205.303692,369.057337,306.117279,1197.102165,530.131422,"NA",81.137892,67.93129,147.32617,345.071628,99.055482,309.493272,34.569772,86.672918,91.862217,247.526803,1198.658939,777.2,395.873357,160.313506,256.78118,152.777707,150.096228,209.992815,782.551512,63.579809,550,2110.47152,2185.215152,664.519854,144.086042,208.596658,214.323667,62.852803,94.711634,77.487704,489,420.2,80.619826,79.578356,70.109474,105.873864,103.293044,203.510693,179.625822,87.608851,84.999473,204.186619,217.89228,259.168232,720.33,420,1030,24989.47323,2281.157394,282.808337,415.24,218.95421,150.50572,205.718225,148.93694,166.5185,198.315527,0.041389,570,288.587716,84.168368,509,3180,293,174.522047,868.41,30.966565,405.761675,305.27706,192.341132,145.610096,410.320947,740.19648,697.94,1020,270.563938,194.501047,84.53441,1053.368635,300.534644,639,1310,85.404497,149.964932,339.872423,142.294398,96.418279,694.961126,107.583164,214.934488,368.889767,397.358247,279.019217,344.764761,101.338153,762.96589,381.290283,124.500299,132.195138,535.660076,148.562331,217.323914,303.021389,584.359509,338.612043,256.523632,170.417329,339.80173,133.327368,199.381244,199.597303,3437.71256,657.282195,220.89575,113.557011,451.45667,355.721165,356.90607,1055.914161,18.026833,90.906945,125.296744,142.840199,364.967805,85.117507,118.502521,769.017987,889,653.45,"NA",400,"NA",505.19,802,"NA","NA",226.218024,236.869493,224.639726,290.450212,216.238227,135.376027,720,385.2,356.04236,338.031359,"NA",131.897886,1092.482484,9870,4200,37.836556,679.844126,71.702578,318,111.712144,434,0.450511,359.630251,171.755985,218.667917,202.82093,444.190089,152.952665,196.17259,183.489965,194.692147,289.738255,178.980039,176.645221,898.722461,167.963602,108.424374,193.30526,"NA",561.018539,109.662014,116.096379,538,2337.42,"NA",880.2,694.38,2050,1198.05,"NA",561.04893,367.531751,285.617776,823.7,481,26.745185,93.71515,63.823397,290.600668,314.173599,91.434608,270,250,88.675781,65.200292,64.416,155.769616,496.619126,95.58297,581.306713,164.538612,88.328409,1595.260416,1674.738517,637.41556,1611.860242,1608.626729,2023.965312,210.183856,547.650302,3085.52959,282.684812,612.659077,440.297088,568.788552,1228.769748,162.64888,596.134856,551.704124,570.439297,306.521578,336.024126,676.355486,617.556104,206.652708,612.726892,629.53305,613.606901,809.166127,"NA",1000,796.079849,76.917866,58.693792,256.942731,"NA",152.874425,83.285808,185.635621,94.565324,253.440431,94.077797,209.583687,812,1005,380,"NA","NA",136.457232,126.898824,157.685146,130.993692,369.507328,387.698157,243.297333,178.877727,183.614148,144.484493,94.342601,115.71117,497.653417,112.886656,423.749431,135.095893,111.121382,154.475151,151.763244,144.615703,140.718537,114.929189,159.870286,152.307889,123.482532,202.892949,126.553516,137.598402,160.005509,159.333148,168.698121,155.813463,124.207842,124.314281,146.121634,173.522624,1.017101,173.209915,168.836898,172.616716,"NA",235.510497,126.554216,301.30643,768.2,734.598711,516,"NA",1640,150,210.673061,231.939145,1091.604438,237.087994,241.628624,250.451995,279.759215,203.476571,273.07112,214.906942,235.161229,201.072056,234.637738,236.144072,243.937487,232.903199,202.127249,214.392704,230.205423,205.470248,195.731205,193.036659,237.194753,215.161711,207.725404,247.926619,293.101063,252.718717,879.736151,539.494676,287.314012,327.395723,726.535487,1270,375.356004,868.042843,164.025895,784.357324,357.79,13660,286.49409,8695.752659,142.426512,56.380112,78.287767,235.111849,660,1260,4030.27655,4577.242521,6659.57439,6066.318599,2846.502231,5862.330991,6169.072487,4038.780371,17360,16415.29215,761.74,210.33651,1.486204,1.216072,520,629.212913,114.238494,1138.946895,119.936432,238.709075,234.81261,133.098831,417.939706,91.228929,376.019528,76.2498,369.639086,201.44603,168.385204,3330.971197,104.763288,1593.983785,78.928556,114.43224,127.409474,145.970427,479.780791,308.738003,89.612655,174.578553,1323.794399,250.379023,581.650225,528.605879,183.426011,158.206057,72.293115,123.046369,590.11041,1315.168642,180.942911,445.389174,468.775455,136.822445,613.032713,460.375462,399.721776,203.746745,114.490911,103.168742,1125.280032,90.39639,339.297597,388.336863,498.247451,167.43334,615.499658,393.733163,510.690737,466.55911,166.371762,3720,4170,"NA","NA","NA",1971.072983,552,"NA","NA",882,"NA","NA","NA",1760,"NA",2164.779115,1279.452404,4252.838282,46306.506384,1375.814435,659.42,382.578094,165.078924,2600,1900,177.273125,"NA",88.828852,212.417201,0.459743,212.674529,780,928.778873,160.654206,40.234075,"NA",238.808847,691.025941,223.273729,312,98.24388,197.517442,101.926556,72.223663,211.86,186,67.363132,209.537041,69.623093,79.686032,87.464652,59.406994,503.414998,560,62.619399,198.955178,394.221178,187.133596,512.7799,56.421206,70.248966,77.997474,400.761888,213.530373,141.812357,256.515394,228.573727,162.574639,63.344738,62.34229,201.015652,67.300702,256.65,710.83,219,320.17,"NA",405.87,"NA",600,480.97,"NA",187.012916,365.569895,151.685277,294.673642,140.337714,567,"NA",103.19408,84.918585,95.64171,107.033871,90.820187,114.326953,235.551871,115.594587,291.395206,86.983037,"NA","NA","NA",258.948908,123.594588,592.685563,344.781425,266.38312,127.883751,133.546225,125.220973,129.400962,474.43,590,"NA","NA","NA",425,"NA",753,255,62.746844,485.335202,141.807616,653.44,445,210.643541,185.943647,92.412485,37.475882,210.154185,224.558375,205.928787,226.727115,2660.076024,3531.969831,1901.645904,1545.682551,453.974323,1178.68762,476.796418,1175.779827,2223.168683,654.178864,393.48868,2173.557922,602.866166,900.174479,640.302186,479.506822,233.818274,556.650699,214.930798,267.542903,842.570319,231.297407,297.458833,222.425417,1006.669398,320.728326,803.092633,284.103008,371.88745,328.374714,270.725357,258.866005,401.623998,2.784503,3000,1400,1170,882,"NA",427.77,2170.210686,220.865349,201.541811,847.293591,1868,407.77654,98.615438,93.673423,103.260594,139.286714,146.539426,186.985966,159.259262,169.36653,147.741221,74.42029,169.133451,148.039113,491.107596,164.944372,279.696663,"NA","NA"],["PacBio Sequel","NA","Illumina HiSeq","NA","Illumina HiSeq","PacBio; Illumina","PacBio RSII; illumina HiseqX","PacBio","PacBio RSII","NA","PacBio and Illumina","PacBio and Illumina","Oxford nanopore and Illumina","Illumina and PacBio","Illumina; PacBio","PacBio Sequel","NA","Pacbio Sequel II","PacBio Sequel","Illumina","Illumina","Oxford Nanopore PromethION","Nanopore + Illumina","Nanopore + Illumina","10x genomics; Hi-C","Illumina HiSeq; Roche 454; Sanger","Illumina; PacBio; HiC; 10x","Illumina HiSeq","NA","Illumina HiSeq","PacBio; 10x genomics","Illumina HiSeq","PacBio RS","Illumina","Illumina HiSeq","NA","Oxford Nanopore; Illumina","Oxford Nanopore GridION","NA","Oxford Nanopore PromethION; PacBio RSII","PacBio","Illumina MiSeq; PacBio RSII; HiRise pipeline","Linkage mapping","NA","454","Illumina and PacBio","Oxford Nanopore GridION","Illumina HiSeq","Illumina HiSeq","Oxford Nanopore and Illumina","Illumina HiSeq","PacBio; Illumina; Hi-C","Illumina","PacBio RSII","Illumina HiSeq2000; Illumina MiSeq","PacBio RSII; PacBio Sequel","NA","Illumina","NA","Illumina HiSeq","Illumina Hiseq; PacBio","NA","Oxford Nanopore and Illumina","PacBio, Illumina, 454","PacBio and Illumina","Illumina HiSeq","PacBio and Illumina","Illumina HiSeq","PacBio","NA","Illumina HiSeq","Oxford Nanopore MinION","Illumina HiSeq","NA","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","PacBio Sequel; Illumina NovaSeq","Illumina and Oxford nanopore","Illumina MiSeq; 454; Sanger","Illumina HiSeq; 454","Illumina HiSeq","NA","NA","NA","NA","PacBio Sequel","NA","ABI 3739; Roche 454FLX","NA","Illumina HiSeq","ABI 3730","Illumina HiSeq; Illumina MiSeq; PacBio","NA","PacBio RSII","NA","PacBio; Illumina MiSeq; Hi-C","NA","Illumina NovaSeq 6000","NA","NA","Illumina","Illumina HiSeq","NA","NA","Oxford Nanopore MinION","Illumina HiSeq","NA","NA","NA","454 GS FLX Titanium; Illumina GA II","NA","NA","NA","Illumina","Illumina","NA","Illumina","Illumina HiSeq 2000","NA","NA","Illumina; 454","Illumina GAII; 454","Illumina MiSeq","NA","Illumina; PacBio","NA","NA","NA","NA","NA","NA","NA","Illumina","Illumina HiSeq","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","Illumina MiSeq","NA","NA","NA","NA","NA","Illumina HiSeq","Illumina and Oxford nanopore","PacBio and Illumina","Illumina HiSeq","Illumina","Illumina","NA","ROCHE-454 and Illumina","PacBio and Illumina","Illumina, PacBio, 454, Moleculo","Illumina NovaSeq","Illumina","Illumina","Illumina","Illumina","Illumina","PacBio and Illumina","NA","PacBio; Illumina; 10X Genomics; Hi-C","PacBio; Illumina","Illumina HiSeq; Oxford Nanopore GridION","Illumina HiSeq","Illumina HiSeq; Illumina MiSeq","Illumina HiSeq; Illumina MiSeq","PacBio Sequel","Illumina GA IIx","NA","NA","Illumina HiSeq","454 GS FLX+; Illumina HiSeq1000","Illumina HiSeq","NA","PacBio RS","NA","Illumina HiSeq","Illumina HiSeq; PacBio","Illumina HiSeq,PacBio","Illumina HiSeq 2000; PacBio RS","Oxford nanopore and Illumina","PacBio","Illumina HiSeq","Illumina HiSeq","PacBio; Illumina HiSeq; BioNano physical map","Illumina HiSeq","PacBio RSII; Illumina HiSeq","PacBio Sequel","Illumina Hisiq","Illumina HiSeq","Illumina HiSeq; PacBio","Illumina HiSeq; PacBio","PacBio; Illumina HiSeq","NA","PacBio; Illumina HiSeq","Illumina","Illumina; PacBio","PacBio RSII","Illumina MiSeq","PacBio","Illumina","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Oxford Nanopore MinION; Bionano Irys; Illumina Hiseq paired-end; Illumina Hiseq mate pair; PacBio RSII","PacBio","PacBio Sequel","PacBio RSII; PacBio Sequel; 10X Genomics; Hi-C; Illumina","PacBio Sequel; HiSeq2500","PacBio Sequel","PacBio RSII","Illumina HiSeq; Illumina MiSeq; PacBio RSII","Illumina","PacBio and Illumina","PacBio RSII","Illumina and Nanopore","NA","NA","PacBio Sequel","PacBio and Illumina","Illumina HiSeq","NA","Illumina HiSeq; PacBio Sequel","Illumina HiSeq; PacBio SMRT","Nanopore PromethION","NA","NA","BAC","PacBio Sequel1","Illumina HiSeq","PacBio and Illumina","PacBio and Illumina","PacBio and Illumina","PacBio Sequel","PacBio and Illumina","Illumina MiSeq","PacBio Sequel","Illumina HiSeq","454","Illumina HiSeq","Illumina GAIIx","Illumina HiSeq","Illumina HiSeq","PacBio","NA","PacBio Sequel; PacBio RSII","Illumina; PacBio","PacBio RS","Illumina HiSeq","PacBio and Illumina","PacBion and Illumina","BGISeq-500; Oxford Nanopore GridION","PacBio Sequel; Illumina HiSeq","NA","PacBio; Bionano","Illumina HiSeq","Oxford Nanopore","PacBio RSII","PacBio; Illumina HiSeq","ABI 3730; Roche 454 FLX; Illumina GAII","PacBio RSII; PacBio Sequel","PacBio; Illumina; Bionano","Illumina HiSeq; PacBio Sequel; BioNano Genomics Iris","PacBio; Illumina","PacBio RSII; Illumina HiSeq","PacBio RSII; Illumina HiSeq2500","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","PacBio","PacBio Sequel; Illumina HiSeq","PacBio Sequel","HiSeq1000; Hiseq2000; Miseq; Roche454","Illumina HiSeq","Illumina HiSeq","PacBio Sequel; Illumina HiSeq","10x genomics sequencing technology","PacBio RSII; Illumina HiSeq","PacBio RSII; Illumina HiSeq","Illumina HiSeq","PacBio; Illumina; BioNano optical","Illumina HiSeq","Illumina HiSeq","Illumina Hiseq2000","Illumina","Illumina HiSeq","MinION","NA","NA","NA","Illumina HiSeq","Illumina HiSeq","NA","Illumina MiSeq","Illumina HiSeq","PacBio","PacBio, Illumina","Illumina HiSeq","PacBio and Illumina","Illumina HiSeq","PacBio and Illumina","Illumina, Oxford Nanopore","Illumina","Illumina","PacBio Sequel","illumina Novaseq6000","NA","Illumina","PacBio Sequel","Illumina HiSeq; PacBio","Illumina HiSeq","10x, Illumina HiSeq","Sanger","Oxfrod nanopore and illumina","NA","Illumina HiSeq","Illumina HiSeq; 454","PacBio","Illumina HiSeq","Illumina HiSeq","PacBio Sequel; HiSeq X Ten","Illumina","10x, Illumina HiSeq","Illumina HiSeq","Illumina and Pacbio","454 GS junior+ system","Illumina","Illumina HiSeq","Illumina HiSeq PacBio","Illumina HiSeq PacBio","Illumina HiSeq; Oxford Nanopore MinION; Illumina NovaSeq","PacBio","Illumina HiSeq","Illumina","Illumina","Illumina","Illumina","NA","PacBio","Illumina; PacBio","NA","Illumina HiSeq","PacBio and illumina","Illumina HiSeq","Illumina HiSeq","Illumina GAIIx; Illumina HiSeq; PacBio","PacBio and Illumina","Illumina and 10x","Roche 454 and Illumina","Illumina and 10x","Illumina and 10x","Illumina HiSeq","Illumina and 10x","Oxford nanopore, PacBio, ONT","PacBio","PacBio Sequel","PacBio","PacBio and Illumina","Illumina HiSeq","PacBio","Illumina MiSeq","Illumina HiSeq","NA","Oxford Nanopore MinION; Illumina NextSeq","Illumina HiSeq","PacBio Sequel","PacBio Sequel","PacBio RSII","NA","NA","NA","Illumina; PacBio; Bionano","Illumina MiSeq","ABI3730","Illumina HiSeq; Illumina MiSeq","NA","PacBio Sequel","PacBio Sequel","PacBio Sequel","PacBio Sequel","PacBio Sequel","PacBio","PacBio","Illumina HiSeq","PacBio Sequel","454","Illumina HiSeq 2500","Illumina Hiseq2000","Illumina HiSeq 2500","PacBio Sequel","Illumina HiSeq","Illumina HiSeq 2500","Illumina HiSeq 2500","Illumina HiSeq 2500","454","PacBio Sequel; Oxford Nanopore MinION","Illumina HiSeq 2500","Illumina HiSeq 2500","Illumina HiSeq; PacBio","Illumina HiSeq 2500","Illumina HiSeq 2500","Illumina HiSeq 2500","PacBio","PacBio and Illumina","PacBio and Illumina","NA","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","NA","NA","NA","PacBio Sequel","Illumina HiSeq; Oxford Nanopore","Illumina HiSeq2000","PacBio Sequel","Illumina HiSeq","Illumina","Illumina","PacBio and Illumina","NA","NA","Illumina HiSeq","NA","NA","Illumina HiSeq","PacBio Sequel","Illumina HiSeq; Illumina MiSeq","Illumina; PacBio","NA","Illumina HiSeq; Oxford Nanopore","Oxford Nanopore MinION","HiSeq2500","Oxford Nanopore MinION","ABI 3739","Oxford Nanopore MinION","NA","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","PacBio Sequel","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","10x chromium","NA","Oxford Nanopore MinION","Oxford Nanopore MinION","IonTorrent","Oxford Nanopore MinION","Oxford Nanopore MinION","Oxford Nanopore MinION","NA","Illumina; PacBio; Hi-C","NA","Illumina HiSeq","Oxford nanopore and Illumina","PacBio Sequel","Illumina","PacBio","Illumina?","Illumina, PacBio, and 10x genomics","NA","Nanopore; ONT; Promethion","linkage map","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","Illumina HiSeq; Illumina GAIIx","Illumina; PacBio","Illumina HiSeq","Oxford Nanopore; Illumina","Illumina HiSeq","Illumina","Illumina HiSeq","Illumina HiSeq","illumina HiSeq2000; ABI 3730x1","illumina HiSeq2000; PacBio RS","Illumina HiSeq; PacBio RSII","Illumina; Nanopore","Oxford nanopore and Illumina","PacBio","Illumina HiSeq","Illumina","Illumina HiSeq 2500","Illumina GAII","Illumina Hiseq 2000","ABI3730","Illumina","Illumina HiSeq 2500","PacBio","Illumina HiSeq","Illumina; PacBio; Fosmid DiTag","NA","Illumina HiSeq","NA","NA","NA","Illumina HiSeq","Illumina HiSeq; Illumina MiSeq","PacBio and Illumina","Illumina; PacBio","454","454","PacBio and Illumina","PacBio","Oxford Nanopore PromethION","Oxford Nanopore MinION; Illumina","PacBio","PacBio","ABI 3739","454; Illumina HiSeq; Illumina MiSeq","PacBio","Illumina HiSeq","PACBIO SEQUEL; Illumina HISeq","PacBio","Illumina HiSeq; Oxford Nanopore","Oxford Nanopore MiniION","Illumina HiSeq2500; Pacific Bio RSII","Illumina MiSeq; Illumina HiSeq","Illumina HiSeq2000, Illumina MiSeq","NA","Illumina HiSeq","Illumina HiSeq; 454","Illumina HiSeq2000, Illumina MiSeq","Illumina HiSeq","PacBio Sequel; Chicago; Hi-C","PacBio","Illumina GAIIx; 454","PacBio Sequel; Illumina HiSeq","PacBio; Illumina HiSeq; Illumina MiSeq","Illumina GAII; PacBio","Illumina HiSeq","PacBio Sequel","Illumina HiSeq","Illumina HiSeq; 454","Illumina GA II","PacBio","NA","NA","Illumina HiSeq2000, Illumina MiSeq","PacBio Sequel","Illumina HiSeq; PacBio RSII; PacBio Sequel","Illumina HiSeq","NA","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq; PacBio","PacBio","Illumina HiSeq; PacBio RSII","NA","454 Titanium","PacBio; Illumina","Illumina NextSeq; Illumina HiSeq; SOLiD","NA","NA","NA","Illumina HiSeq","Illumina","NA","Illumina MiSeq","PacBio and Illumina","PacBio and Illumina","Illumina","PacBio and Illumina","PacBio and Illumina","Nanoproe and Illumina","PacBio and Illumina","Illumina","PacBio and Illumina","Illumina and PacBio","PacBio","PacBio and Illumina","Roche 454","PacBio and Illumina","Illumina","PacBio RS","Illumina HiSeq; PacBio Sequel","Illumina; PacBio","NA","Illumina HiSeq; PacBio","PacBio and Illumina","Illumina HiSeq; PacBio RSII","PacBio","Illumina","PacBio and Illumina","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq; Illumina MiSeq; PacBio","Illumina NextSeq 500","NA","PacBio; Illumina HiSeq","PacBio and Illumina","Illumina","Illumina","Illumina HiSeq","NA","Sanger","NA","Illumina HiSeq","PacBio and Illumina","Illumina HiSeq","Oxford Nanopore GridION","PacBio Sequel","NA","PacBio and Illumina","Illumina HiSeq","PacBio RSII","Sequel","PacBio Sequel","Illumina HiSeq; PacBio Sequel","Oxford Nanopore PromethION; Illumina HiSeq","454; Solexa","PacBio RSII","PacBio RS II","Illumina Hiseq2000","NA","NA","NA","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","PacBio; Illumina HiSeq","PacBio Sequel","Illumina HiSeq2000, Illumina MiSeq","Illumina HS2000","Illumina HiSeq","Illumina HiSeq","Illumina NovaSeq","Illumina HiSeq1000","Illumina HiSeq1000","Illumina GAIIx; Illumina HiSeq1000","Illumina HiSeq1000","Oxford nanopore and Illumina","Oxford Nanopore and illumina","PacBio and Illumina","PacBio and Illumina","PacBio and Illumina","PacBio and Illumina","Illumina and 10x","Roche 454","Illumina HiSeq","PacBio and Illumina","Illumina HiSeq; PacBio RS; 10x Chromium","NA","Oxford Nanopore, Hi-C","Illumina HiSeq; PacBio RSII; 10x GemCode","Illumina NextSeq","Illumina HiSeq","PacBio","Illumina HiSeq","Illumina","PacBio; Illumina HiSeq","Illumina HiSeq","Illumina HiSeq; PacBio","Illumina HiSeq","ABI 3739","PacBio Sequel","Illumina HiSeq; PacBio RS II","Illumina HiSeq","PacBio","Illumina HiSeq","PacBio","Oxford Nanopore PromethION","Illumina","PacBio RSII; Illumina HiSeq","Sanger; Illumina","Oxford Nanopore PromethION; Hi-C","PacBio Sequel","Illumina Hiseq2000","PacBio Sequel","PacBio Sequel","PacBio and Illumina","Illumina","454 and Illumina","454 and Illumina","Illumina","PacBio","PacBio and Illumina","PacBio and Illumina Hiseq2000","PacBio and Illumina Hiseq2000","Oxford Nanopore","PacBio Sequel","PacBio Sequel","PacBio and Illumina","Illumina HiSeq","Illumina","NA","PacBio","Illumina HiSeq","NA","PacBio RSII; Illumina HiSeq (chromium 10X); Bionano optical mapping","NA","PacBio Sequel","Oxford Nanopore MiniION; Illumina NovaSeq","NA","Illumina NextSeq","Illumina HiSeq; 454; PacBio","PacBio; Illumina","Illumina HiSeq","Illumina HiSeq; PacBio Sequel","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","NA","Illumina HiSeq","NA","Illumina HiSeq; PacBio","Illumina MiSeq; Illumina HiSeq","454 GS FLX+; Illumina HiSeq2000","Illumina HiSeq","Illumina HiSeq","Illumnina","Illumina","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","Illumina HiSeq","NA","Illumina HISeq","PacBio and Illumina","Illumina HiSeq","Illumina","NA","PacBio and Illumina","PacBio","Illumina HiSeq; PacBio Sequel","Illumina HiSeq","PacBio Sequel","PacBio and Illumina","Illumina","Illumina HiSeq","PacBio","Illumina HiSeq","Illumina HiSeq; PacBio RSII; 10X Chromium Genomics","Illumina HiSeq2500, Illumina NovaSeq","PacBio RSII","Illumina","Illumina HiSeq; PacBio RSII","Oxford Nanopore MinION","Illumina HiSeq","NA","454; Illumina HiSeq","Illumina","Illumina MiSeq; Illumina HiSeq","NA","Illumina","NA"],["NA","NA","NA","NA","2n","2n","NA","6n","2n","NA","NA","NA","NA","NA","NA","2n","NA","4n","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","2n","4n","NA","NA","2n","2n","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","2n","NA","NA","2n","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","2n","2n","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","2n","2n","2n","2n","NA","2n","2n","2n","NA","NA","2n","2n","4n","NA","NA","2n","3n","NA","2n","NA","NA","NA","2n","2n","NA","NA","2n","4n","NA","2n","NA","NA","4n","NA","2n","2n","4n","NA","NA","NA","NA","4n","NA","NA","NA","NA","NA","NA","NA","NA","4n","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","4n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","2n","NA","2n","NA","NA","2n","NA","2n","2n","NA","2n","NA","4n","NA","2n","NA","NA","NA","NA","NA","NA","2n","2n","2n","8n","NA","4n","2n","2n","NA","NA","NA","4n","NA","4n","2n","NA","NA","2n","2n","2n","NA","2n","2n","NA","NA","NA","6n","2n","NA","NA","NA","2n","NA","NA","6n","4n","NA","NA","NA","4n","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","2n","2n","2n","NA","NA","NA","NA","2n","2n","2n","NA","4n","NA","2n","2n","NA","2n","NA","NA","2n","2n","NA","NA","2n","NA","2n","2n","NA","2n","2n","4n","2n","2n","2n","2n","2n","4n","4n","NA","2n","2n","NA","2n","2n","2n","2n","NA","2n","NA","NA","8n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","2n","NA","2n","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","4n","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","2n","NA","NA","NA","NA","NA","2n","2n","2n","4n","4n","4n","4n","4n","2n","NA","NA","2n","2n","NA","2n","2n","2n","2n","2n","2n","2n","2n","2n","2n","2n","NA","2n","2n","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","2n","2n","2n","2n","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","2n","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","2n","2n","NA","NA","NA","NA","NA","NA","NA","NA","2n","2n","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","2n","NA","NA","2n","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","2n","2n","2n","NA","NA","NA","NA","2n","2n","2n","2n","NA","2n","2n","NA","2n","NA","2n","NA","2n","NA","4n","2n","2n","2n","4n","2n","2n","NA","NA","NA","2n","NA","2n","2n","4n","4n","NA","NA","2n","NA","2n","NA","NA","2n","NA","NA","NA","NA","2n","NA","4n","2n","2n","NA","NA","NA","NA","4n","NA","2n","NA","NA","NA","2n","2n","8n","2n","NA","4n","2n","NA","2n","2n","NA","2n","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","6n","4n","2n","NA","2n","2n","NA","NA","NA","NA","2n","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","2n","NA","NA","NA","2n","NA","2n","2n","NA","NA","NA","NA","NA","NA","NA","4n","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","2n","NA","4n","NA","NA","NA","NA","2n","NA","2n","NA","2n","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","2n","NA","NA","NA","NA","2n","NA","2n","2n","NA","4n","2n","4n","2n","2n","2n","2n","2n","2n","2n","2n","NA","2n","NA","2n","NA","2n","2n","NA","2n","NA","2n","2n","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","NA","NA","NA","NA","NA","NA","NA","2n","NA","2n","2n","2n","NA","NA","2n","2n","2n","2n","NA","2n","NA"],["Cultivated","Wild","Wild","Wild","Domesticated","Domesticated","Wild relative","Cultivated","Cultivated","Feral","Feral","Feral","Cultivated","Wild","Wild","Domesticated","Wild","Domesticated","Domesticated","Natural commodity","Cultivated","Wild","Wild","Wild","Cultivated","Wild","Domesticated","Cultivated","Cultivated","Domesticated","Cultivated","Cultivated","Wild","Natural commodity","Cultivated","Wild","Wild","Wild","Wild","Domesticated","Domesticated","Domesticated","Domesticated","Wild","Domesticated","Natural commodity","Cultivated","Domesticated","Cultivated","Cultivated","Domesticated","Feral","Cultivated","Domesticated","Cultivated","Feral","Wild relative","Cultivated","Domesticated","Cultivated","Natural commodity","Cultivated","Cultivated","Wild","Natural commodity","Wild","Natural commodity","Domesticated","Cultivated","Natural commodity","Wild","Wild relative","Wild","Wild","Wild","Wild","Wild","Wild","Natural commodity","Feral","Natural commodity","Wild","Cultivated","Wild","Wild","Domesticated","Wild","Domesticated","Cultivated","Wild","Wild","Wild","Wild","Wild","Cultivated","Wild","Domesticated","Domesticated","Wild","Wild","Cultivated","Wild","Wild","Wild","Wild","Wild","Wild","Domesticated","Wild","Wild","Wild","Cultivated","Wild","Wild","Wild","Wild","Wild","Wild","Wild","Wild","Domesticated","Wild","Wild","Wild","Wild relative","Cultivated","Cultivated","Wild","Wild","Cultivated","Wild","Cultivated","Wild","Wild","Wild","Wild","Cultivated","Wild","Wild","Wild","Wild","Wild","Wild","Wild relative","Wild","Natural commodity","Wild","Cultivated","Wild","Wild","Cultivated","Wild","Wild","Wild","Wild","Natural commodity","Cultivated","Cultivated","Natural commodity","Wild","Wild","Domesticated","Wild relative","Natural commodity","Natural commodity","Wild","Wild","Natural commodity","Wild","Cultivated","Natural commodity","Wild","Cultivated","Cultivated","Wild","Domesticated","Natural commodity","Domesticated","Domesticated","Natural commodity","Domesticated","Natural commodity","Domesticated","Wild","Wild","Wild","Wild","Wild","Natural commodity","Natural commodity","Wild","Wild","Domesticated","Wild relative","Domesticated","Cultivated","Wild relative","Cultivated","Wild","Wild","Cultivated","Wild","Wild","Cultivated","Feral","Feral","Domesticated","Cultivated","Wild","Wild","Cultivated","Natural commodity","Domesticated","Domesticated","Domesticated","Domesticated","Domesticated","Cultivated","Domesticated","Domesticated","Domesticated","Cultivated","Domesticated","Domesticated","Cultivated","Natural commodity","Cultivated","Natural commodity","Wild","Wild","Wild","Wild","Wild relative","Natural commodity","Natural commodity","Wild relative","Domesticated","Wild relative","Cultivated","Wild","Wild","Wild","Wild","Wild","Domesticated","Cultivated","Natural commodity","Wild","Cultivated","Domesticated","Cultivated","Domesticated","Wild","Cultivated","Natural commodity","Cultivated","Domesticated","Cultivated","Cultivated","Wild","Wild","Natural commodity","Wild","Domesticated","Wild","Domesticated","Natural commodity","Domesticated","Natural commodity","Wild relative","Domesticated","Cultivated","Domesticated","Cultivated","Wild","Wild relative","Domesticated","Domesticated","Wild","Wild relative","Wild","Natural commodity","Wild relative","Wild","Wild","Wild relative","Cultivated","Wild relative","Domesticated","Domesticated","Wild relative","Cultivated","Wild relative","Cultivated","Wild","Domesticated","Wild relative","Cultivated","Domesticated","Domesticated","Cultivated","Wild","Wild","Domesticated","Wild","Natural commodity","Wild","Wild","Natural commodity","Natural commodity","Natural commodity","Cultivated","Natural commodity","Cultivated","Wild","Cultivated","Wild","Wild","Natural commodity","Natural commodity","Cultivated","Natural commodity","Natural commodity","Wild","Wild","Wild","Wild","Wild","Wild","Natural commodity","Wild","Wild","Cultivated","Wild","Wild","Cultivated","Wild","Wild","Wild","Wild","Cultivated","Domesticated","Domesticated","Wild","Cultivated","Natural commodity","Wild relative","Wild","Wild relative","Wild","Cultivated","Natural commodity","Natural commodity","Wild","Cultivated","Wild","Wild","Wild","Natural commodity","Cultivated","Wild","Cultivated","Cultivated","Natural commodity","Cultivated","Natural commodity","Wild","Natural commodity","Domesticated","Natural commodity","Wild","Wild","Wild","Wild","Wild","Domesticated","Wild relative","Wild","Wild","Domesticated","Natural commodity","Natural commodity","Wild","Natural commodity","Wild","Wild relative","Wild","Domesticated","Wild","Wild","Domesticated","Domesticated","Wild relative","Wild","Domesticated","Cultivated","Wild","Cultivated","Wild","Wild relative","Wild","Wild","Wild","Wild","Wild","Wild","Cultivated","Wild relative","Wild","Wild","Wild","Wild","Wild","Wild","Natural commodity","Domesticated","Cultivated","Wild","Wild","Wild","Cultivated","Cultivated","Wild","Wild","Wild relative","Cultivated","Natural commodity","Domesticated","Wild relative","Cultivated","Cultivated","Natural commodity","Wild","Wild","Cultivated","Domesticated","Wild relative","Wild relative","Wild relative","Cultivated","Cultivated","Natural commodity","Natural commodity","Wild","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Wild","Natural commodity","Wild","Natural commodity","Natural commodity","Wild","Natural commodity","Wild","Domesticated","Wild","Wild","Wild","Natural commodity","Natural commodity","Wild","Cultivated","Wild","Natural commodity","Natural commodity","Natural commodity","Cultivated","Natural commodity","Wild","Natural commodity","Wild","Domesticated","Cultivated","Wild","Wild","Wild","Natural commodity","Wild","Wild","Wild","Natural commodity","Wild","Domesticated","Cultivated","Natural commodity","Natural commodity","Wild","Wild","Natural commodity","Wild","Wild","Wild","Wild","Wild","Wild","Cultivated","Natural commodity","Natural commodity","Wild","Wild","Natural commodity","Wild","Natural commodity","Wild","Wild","Natural commodity","Wild","Wild","Wild","Domesticated","Cultivated","Natural commodity","Cultivated","Cultivated","Feral","Domesticated","Wild","Wild","Cultivated","Cultivated","Wild","Domesticated","Cultivated","Domesticated","Domesticated","Wild","Wild","Wild","Natural commodity","Natural commodity","Wild","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Natural commodity","Cultivated","Wild","Wild","Wild","Wild","Domesticated","Domesticated","Wild relative","Wild relative","Domesticated","Wild","Domesticated","Feral","Wild","Wild","Wild","Wild","Domesticated","Wild","Domesticated","Wild","Wild","Wild","Feral","Wild","Wild relative","Wild","Wild","Wild relative","Wild","Domesticated","Wild","Cultivated","Cultivated","Wild","Domesticated","Wild","Feral","Wild","Wild","Cultivated","Wild","Cultivated","Cultivated","Domesticated","Domesticated","Wild","Wild","Wild","Wild","Wild relative","Domesticated","Wild","Domesticated","Wild relative","Domesticated","Domesticated","Cultivated","Wild","Wild relative","Cultivated","Cultivated","Cultivated","Natural commodity","Wild","Wild","Wild","Wild","Natural commodity","Wild relative","Wild relative","Domesticated","Wild relative","Wild","Domesticated","Natural commodity","Domesticated","Wild relative","Domesticated","Wild relative","Wild relative","Wild","Domesticated","Cultivated","Natural commodity","Wild","Wild","Wild","Natural commodity","Wild","Wild","Domesticated","Wild relative","Wild","Natural commodity","Wild","Wild","Wild","Wild","Wild","Cultivated","Wild","Wild","Cultivated","Natural commodity","Wild","Wild","Domesticated","Natural commodity","Wild relative","Domesticated","Domesticated","Wild relative","Domesticated","Domesticated","Domesticated","Domesticated","Wild","Domesticated","Wild relative","Natural commodity","Wild","Wild","Wild relative","Wild","Domesticated","Wild","Cultivated","Domesticated","Wild relative","Wild","Domesticated","Wild","Wild relative","Cultivated","Wild relative","Cultivated","Wild relative","Wild","Domesticated","Domesticated","Domesticated","Domesticated","Wild relative","Domesticated","Cultivated","Domesticated","Wild","Natural commodity","Wild","Wild relative","Domesticated","Domesticated","Domesticated","Wild relative","Cultivated","Domesticated","Domesticated","Domesticated","Domesticated","Wild relative","Wild relative","Wild relative","Wild","Wild","Natural commodity","Natural commodity","Wild","Natural commodity","Natural commodity","Wild","Wild","Cultivated","Wild","Natural commodity","Natural commodity","Wild","Natural commodity","Wild","Wild","Wild","Natural commodity","Wild","Wild","Natural commodity","Cultivated","Cultivated","Wild","Wild","Wild","Natural commodity","Domesticated","Wild relative","Wild relative","Domesticated","Wild relative","Wild relative","Wild","Wild","Domesticated","Cultivated","Cultivated","Cultivated","Wild","Wild","Domesticated","Wild relative","Domesticated","Wild","Wild relative","Wild","Wild","Wild","Wild relative","Wild","Domesticated","Cultivated","Wild","Wild","Wild","Wild","Wild relative","Wild","Wild relative","Wild","Wild","Wild relative","Wild","Wild","Domesticated","Cultivated","Wild relative","Natural commodity","Wild","Domesticated","Natural commodity","Natural commodity","Wild","Wild","Natural commodity","Cultivated","Wild","Wild","Wild relative","Domesticated","Domesticated","Wild relative","Wild relative","Wild relative","Natural commodity","Wild","Wild relative","Domesticated","Wild","Wild","Wild","NA"]],"container":"<table class=\"table table-striped table-hover row-border order-column display fill-container\">\n  <thead>\n    <tr>\n      <th>Family<\/th>\n      <th>Species<\/th>\n      <th>N genomes<\/th>\n      <th>Complete BUSCOs (%)<\/th>\n      <th>Genome size (Mb)<\/th>\n      <th>Technology<\/th>\n      <th>Ploidy<\/th>\n      <th>Domestication<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"lengthMenu":[10,20,30,40],"pageLength":10,"scrollX":true,"scrollY":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 1, 3, \",\", \".\");\n  }"},{"width":"50px","targets":2},{"width":"50px","targets":3},{"width":"50px","targets":4},{"width":"50px","targets":6},{"className":"dt-right","targets":[2,3,4]}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[0]; $(this.api().cell(row, 0).node()).css({'font-size':'13px'});\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'font-size':'13px'});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'font-size':'13px'});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'font-size':'13px'});\nvar value=data[4]; $(this.api().cell(row, 4).node()).css({'font-size':'13px'});\nvar value=data[5]; $(this.api().cell(row, 5).node()).css({'font-size':'13px'});\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'font-size':'13px'});\nvar value=data[7]; $(this.api().cell(row, 7).node()).css({'font-size':'13px'});\n}"}},"evals":["options.columnDefs.0.render","options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="polyploid-genomes" class="section level1">
+<h1>Polyploid genomes</h1>
+<div id="row" class="section level2">
+<h2>Row</h2>
+<div id="plant-genomes-and-their-ploidy-levels" class="section level3" data-width="600">
+<h3 data-width="600">Plant genomes and their ploidy levels</h3>
+<div class="knitr-options" data-fig-width="672" data-fig-height="480">
+
+</div>
+<p><img src="index_files/figure-html/genomes_and_ploidy-1.png" width="1400" data-figure-id=fig3 /></p>
+</div>
+<div id="tetraploids-and-their-families" class="section level3" data-width="400">
+<h3 data-width="400">Tetraploids and their families</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div id="htmlwidget-36e6fbe2f1d42bc38ab5" style="width:1200px;height:960px;" class="girafe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-36e6fbe2f1d42bc38ab5">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' id='svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4' viewBox='0 0 432 468'>\n <defs>\n  <clipPath id='svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4_c1'>\n   <rect x='0' y='0' width='432' height='468'/>\n  <\/clipPath>\n  <clipPath id='svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4_c2'>\n   <rect x='90.03' y='5.48' width='336.49' height='430.79'/>\n  <\/clipPath>\n <\/defs>\n <g>\n  <g clip-path='url(#svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4_c1)'>\n   <rect x='0' y='0' width='432' height='468' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round'/>\n   <rect x='0' y='-0' width='432' height='468' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='round'/>\n  <\/g>\n  <g clip-path='url(#svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4_c2)'>\n   <rect x='90.03' y='5.48' width='336.49' height='430.79' fill='#FFFFFF' stroke='none'/>\n   <polyline points='143.56,436.27 143.56,5.48' fill='none' stroke='#EBEBEB' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='220.04,436.27 220.04,5.48' fill='none' stroke='#EBEBEB' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='296.51,436.27 296.51,5.48' fill='none' stroke='#EBEBEB' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='372.99,436.27 372.99,5.48' fill='none' stroke='#EBEBEB' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,419.27 426.52,419.27' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,390.93 426.52,390.93' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,362.58 426.52,362.58' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,334.24 426.52,334.24' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,305.90 426.52,305.90' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,277.56 426.52,277.56' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,249.22 426.52,249.22' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,220.88 426.52,220.88' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,192.53 426.52,192.53' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,164.19 426.52,164.19' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,135.85 426.52,135.85' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,107.51 426.52,107.51' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,79.17 426.52,79.17' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,50.83 426.52,50.83' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='90.03,22.48 426.52,22.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='105.33,436.27 105.33,5.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='181.80,436.27 181.80,5.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='258.28,436.27 258.28,5.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='334.75,436.27 334.75,5.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='411.23,436.27 411.23,5.48' fill='none' stroke='#EBEBEB' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <rect x='105.33' y='406.51' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Mangifera indica' data-id='Anacardiaceae'/>\n   <rect x='105.33' y='378.17' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Spirodela polyrhiza' data-id='Araceae'/>\n   <rect x='105.33' y='38.07' width='267.66' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Biscutella laevigata&amp;lt;br/&amp;gt;Brassica juncea&amp;lt;br/&amp;gt;Brassica napus&amp;lt;br/&amp;gt;Capsella bursa-pastoris&amp;lt;br/&amp;gt;Cochlearia officinalis&amp;lt;br/&amp;gt;Nasturtium officinale&amp;lt;br/&amp;gt;Sisymbrium irio' data-id='Brassicaceae'/>\n   <rect x='105.33' y='349.83' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Chenopodium quinoa' data-id='Chenopodiaceae'/>\n   <rect x='105.33' y='321.49' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Ipomoea batatas' data-id='Convolvulaceae'/>\n   <rect x='105.33' y='151.44' width='76.47' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Cucurbita moschata&amp;lt;br/&amp;gt;Cucurbita pepo' data-id='Cucurbitaceae'/>\n   <rect x='105.33' y='293.15' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Dioscorea alata' data-id='Dioscoreaceae'/>\n   <rect x='105.33' y='264.81' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Drosera capensis' data-id='Droseraceae'/>\n   <rect x='105.33' y='94.76' width='152.95' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Arachis hypogaea&amp;lt;br/&amp;gt;Arachis monticola&amp;lt;br/&amp;gt;Mimosa pudica&amp;lt;br/&amp;gt;Trifolium repens' data-id='Fabaceae'/>\n   <rect x='105.33' y='236.46' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Salvia splendens' data-id='Lamiaceae'/>\n   <rect x='105.33' y='66.41' width='191.19' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Gossypium barbadense&amp;lt;br/&amp;gt;Gossypium darwinii&amp;lt;br/&amp;gt;Gossypium hirsutum&amp;lt;br/&amp;gt;Gossypium mustelinum&amp;lt;br/&amp;gt;Gossypium tomentosum' data-id='Malvaceae'/>\n   <rect x='105.33' y='9.73' width='305.9' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Coix lacryma-jobi&amp;lt;br/&amp;gt;Digitaria exilis&amp;lt;br/&amp;gt;Eleusine coracana&amp;lt;br/&amp;gt;Eragrostis tef&amp;lt;br/&amp;gt;Panicum miliaceum&amp;lt;br/&amp;gt;Triticum dicoccoides&amp;lt;br/&amp;gt;Triticum turgidum&amp;lt;br/&amp;gt;Zoysia japonica' data-id='Poaceae'/>\n   <rect x='105.33' y='208.12' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Rosa damascena' data-id='Rosaceae'/>\n   <rect x='105.33' y='179.78' width='38.24' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Coffea arabica' data-id='Rubiaceae'/>\n   <rect x='105.33' y='123.1' width='76.47' height='25.51' fill='#666666' stroke='#000000' stroke-width='1.07' stroke-linejoin='miter' stroke-linecap='square' title='Nicotiana rustica&amp;lt;br/&amp;gt;Nicotiana tabacum' data-id='Solanaceae'/>\n   <text x='145.4' y='423.22' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='145.4' y='394.88' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='374.83' y='54.78' font-size='8.28pt' font-family='Helvetica'>7<\/text>\n   <text x='145.4' y='366.54' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='145.4' y='338.2' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='183.64' y='168.15' font-size='8.28pt' font-family='Helvetica'>2<\/text>\n   <text x='145.4' y='309.86' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='145.4' y='281.52' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='260.12' y='111.47' font-size='8.28pt' font-family='Helvetica'>4<\/text>\n   <text x='145.4' y='253.17' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='298.35' y='83.12' font-size='8.28pt' font-family='Helvetica'>5<\/text>\n   <text x='413.07' y='26.44' font-size='8.28pt' font-family='Helvetica'>8<\/text>\n   <text x='145.4' y='224.83' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='145.4' y='196.49' font-size='8.28pt' font-family='Helvetica'>1<\/text>\n   <text x='183.64' y='139.81' font-size='8.28pt' font-family='Helvetica'>2<\/text>\n   <rect x='90.03' y='5.48' width='336.49' height='430.79' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='round'/>\n  <\/g>\n  <g clip-path='url(#svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4_c1)'>\n   <text x='26.38' y='422.42' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Anacardiaceae<\/text>\n   <text x='52.32' y='394.08' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Araceae<\/text>\n   <text x='18.54' y='365.74' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Chenopodiaceae<\/text>\n   <text x='22.48' y='337.4' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Convolvulaceae<\/text>\n   <text x='26.4' y='309.06' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Dioscoreaceae<\/text>\n   <text x='34.72' y='280.71' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Droseraceae<\/text>\n   <text x='42.04' y='252.37' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Lamiaceae<\/text>\n   <text x='45.47' y='224.03' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Rosaceae<\/text>\n   <text x='43.02' y='195.69' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Rubiaceae<\/text>\n   <text x='28.36' y='167.35' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Cucurbitaceae<\/text>\n   <text x='38.61' y='139' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Solanaceae<\/text>\n   <text x='45.95' y='110.66' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Fabaceae<\/text>\n   <text x='42.54' y='82.32' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Malvaceae<\/text>\n   <text x='32.27' y='53.98' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Brassicaceae<\/text>\n   <text x='50.35' y='25.64' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>Poaceae<\/text>\n   <polyline points='87.29,419.27 90.03,419.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,390.93 90.03,390.93' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,362.58 90.03,362.58' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,334.24 90.03,334.24' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,305.90 90.03,305.90' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,277.56 90.03,277.56' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,249.22 90.03,249.22' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,220.88 90.03,220.88' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,192.53 90.03,192.53' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,164.19 90.03,164.19' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,135.85 90.03,135.85' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,107.51 90.03,107.51' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,79.17 90.03,79.17' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,50.83 90.03,50.83' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='87.29,22.48 90.03,22.48' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='105.33,439.01 105.33,436.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='181.80,439.01 181.80,436.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='258.28,439.01 258.28,436.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='334.75,439.01 334.75,436.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='411.23,439.01 411.23,436.27' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <text x='102.88' y='447.51' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>0<\/text>\n   <text x='179.35' y='447.51' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>2<\/text>\n   <text x='255.83' y='447.51' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>4<\/text>\n   <text x='332.3' y='447.51' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>6<\/text>\n   <text x='408.78' y='447.51' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D'>8<\/text>\n   <text x='213.02' y='460.09' font-size='8.25pt' font-family='Helvetica'>Species frequency<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_d5284aaa-c029-4ace-af5d-84b69e0a7cf4","ratio":0.923076923076923,"settings":{"tooltip":{"css":".tooltip_SVGID_ { padding:5px;background:black;color:white;border-radius:2px 2px 2px 2px;text-align:left; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","offx":10,"offy":0,"use_cursor_pos":true,"opacity":0.9,"usefill":false,"usestroke":false,"delay":{"over":200,"out":500}},"hover":{"css":".hover_SVGID_ { fill:orange;stroke:gray; }","reactive":false},"hoverkey":{"css":".hover_key_SVGID_ { stroke:red; }","reactive":false},"hovertheme":{"css":".hover_theme_SVGID_ { fill:green; }","reactive":false},"hoverinv":{"css":""},"zoom":{"min":1,"max":1},"capture":{"css":".selected_SVGID_ { fill:red;stroke:gray; }","type":"multiple","only_shiny":true,"selected":[]},"capturekey":{"css":".selected_key_SVGID_ { stroke:gray; }","type":"single","only_shiny":true,"selected":[]},"capturetheme":{"css":".selected_theme_SVGID_ { stroke:gray; }","type":"single","only_shiny":true,"selected":[]},"toolbar":{"position":"top","saveaspng":false,"pngname":"diagram"},"sizing":{"rescale":true,"width":0.75}}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+$(document).ready(function () {
+
+  // add bootstrap table styles to pandoc tables
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+
+  // initialize mathjax
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+  document.getElementsByTagName("head")[0].appendChild(script);
+
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  FlexDashboard.init({
+    theme: "4",
+    fillPage: false,
+    orientation: "rows",
+    storyboard: false,
+    defaultFigWidth: 576,
+    defaultFigHeight: 460,
+    defaultFigWidthMobile: 360,
+    defaultFigHeightMobile: 460,
+    resize_reload: true
+  });
+});
+</script>
+
+</body>
+</html>
