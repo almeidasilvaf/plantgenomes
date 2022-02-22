@@ -11,7 +11,7 @@ output:
         bootswatch: minty
         navbar-bg: "#276c4c" # darkgreen
         base_font: 
-          google: Fraunces
+          google: Atkinson Hyperlegible
         heading_font:
           google: Fraunces
 ---
@@ -304,7 +304,7 @@ p_ploidy
 ```
 
 
-### Tetraploids and their families {data-width=400}
+### Tetraploids and their families (hover to see species names) {data-width=400}
 
 ```{r tetraploids_and_families, dpi = 200}
 tetra_families_and_species <- metadata %>%
@@ -330,5 +330,80 @@ p <- metadata %>%
 
 x <- ggiraph::ggiraph(code = {print(p)}, height_svg = 6.5)
 x
+```
+
+
+# Plant transcriptomes
+
+## Row
+
+### Frequency of RNA-seq samples on NCBI's SRA per family
+
+```{r rnasamples_per_family, dpi = 200, fig.width = 6, fig.height = 9.5}
+metadata_rnaseq <- readr::read_tsv(
+  "https://raw.githubusercontent.com/almeidasilvaf/plant_transcriptomes_data/main/data/species_info.tsv",
+  show_col_types = FALSE
+)
+
+family_rnaseq <- metadata_rnaseq %>%
+  group_by(Family) %>%
+  summarise(N = sum(RNAseq_samples)) %>%
+  filter(N >= 10) %>%
+  drop_na() %>%
+  ggplot(., aes(x = N, y = reorder(Family, N))) +
+  geom_col(color = "grey20", fill = cols[1]) +
+  geom_text(aes(label = N), hjust = -0.1, size = size) +
+  labs(x = "Number of RNA-seq samples", y = "") +
+  xlim(0, 70000) +
+  theme_bw()
+
+family_rnaseq
+```
+
+### Top 20 species in number of RNA-seq samples
+
+```{r top20_rnaseq, dpi = 200, fig.width = 6, fig.height = 9.5}
+cols <- ggsci::pal_aaas()(5)
+top20 <- metadata_rnaseq %>%
+  arrange(-RNAseq_samples) %>%
+  slice_head(n = 50) %>%
+  ggplot(., aes(x = RNAseq_samples, y = reorder(Species, RNAseq_samples))) +
+  geom_col(color = "grey20", fill = cols[3]) +
+  geom_text(aes(label = RNAseq_samples), hjust = -0.1, size = size) +
+  labs(x = "Number of RNA-seq samples", y = "") +
+  xlim(0, 55000) +
+  theme_bw()
+
+top20
+```
+
+## Row 2
+
+### RNA-seq samples per species {data-width=900}
+
+```{r}
+rnaseq_species_table <- metadata_rnaseq %>%
+  mutate(Family = as.factor(Family)) %>%
+  mutate(Species = as.factor(Species))
+
+DT::datatable(
+  rnaseq_species_table,
+  colnames = c("Family", "Species", "Complete BUSCOs (%)", "RNA-seq samples"),
+  selection = "single",
+  rownames = FALSE,
+  filter = 'top',
+  options = list(
+    lengthMenu = c(10, 20, 30, 40),
+    pageLength = 10,
+    scrollX = TRUE,
+    scrollY = TRUE,
+    columnDefs = list(
+      list(width = '90px', targets = 2),
+      list(width = '90px', targets = 3)
+    )
+  )
+) %>%
+  DT::formatStyle(columns = 1:4, 
+                  fontSize = '13px') 
 ```
 
