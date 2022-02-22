@@ -360,7 +360,7 @@ family_rnaseq <- metadata_rnaseq %>%
 family_rnaseq
 ```
 
-### Top 20 species in number of RNA-seq samples
+### Top 50 species in number of RNA-seq samples
 
 ```{r top20_rnaseq, dpi = 200, fig.width = 6, fig.height = 9.5}
 cols <- ggsci::pal_aaas()(5)
