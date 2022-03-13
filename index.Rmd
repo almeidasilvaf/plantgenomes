@@ -242,7 +242,7 @@ DT::datatable(
 
 # Polyploid genomes
 
-## Row
+## Row {data-height=700}
 
 ### Plant genomes and their ploidy levels {data-width=600}
 
@@ -341,7 +341,7 @@ x
 
 ```{r rnasamples_per_family, dpi = 200, fig.width = 6, fig.height = 9.5}
 metadata_rnaseq <- readr::read_tsv(
-  "https://raw.githubusercontent.com/almeidasilvaf/plant_transcriptomes_data/main/data/species_info.tsv",
+  "https://raw.githubusercontent.com/almeidasilvaf/plant_transcriptomes/master/data/species_info.tsv",
   show_col_types = FALSE
 )
 
@@ -381,7 +381,7 @@ top20
 
 ### RNA-seq samples per species {data-width=900}
 
-```{r}
+```{r rnaseq_per_species}
 rnaseq_species_table <- metadata_rnaseq %>%
   mutate(Family = as.factor(Family)) %>%
   mutate(Species = as.factor(Species))
@@ -407,3 +407,64 @@ DT::datatable(
                   fontSize = '13px') 
 ```
 
+# RNA-seq bioprojects
+
+## Row
+
+### RNA-seq bioprojects available on NCBI's Sequence Read Archive
+
+```{r sra_bioprojects}
+brassicaceae_path <- paste0(tempdir(), "/brassicaceae.rda")
+poaceae_path <- paste0(tempdir(), "/poaceae.rda")
+fabaceae_path <- paste0(tempdir(), "/fabaceae.rda")
+otherfam_path <- paste0(tempdir(), "/otherfam.rda")
+
+# Download files in tempdir()
+download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/brassicaceae_projects.rda?raw=true", destfile = brassicaceae_path)
+download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/poaceae_projects.rda?raw=true", destfile = poaceae_path)
+download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/fabaceae_projects.rda?raw=true", destfile = fabaceae_path)
+download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/otherfam_projects.rda?raw=true", destfile = otherfam_path)
+
+# Read files
+load(brassicaceae_path)
+load(fabaceae_path)
+load(poaceae_path)
+load(otherfam_path)
+
+bioprojects <- bind_rows(
+    brassicaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
+    poaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
+    fabaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
+    otherfam_projects %>% dplyr::distinct(., .keep_all = TRUE),
+) %>%
+    mutate(BioProject = as.factor(BioProject),
+           N = as.numeric(N),
+           Pubmed = as.factor(Pubmed),
+           Species = as.factor(Species))
+
+species <- species_table %>% 
+    filter(Complete_BUSCOs >= 80) 
+
+bioprojects_filtered <- bioprojects %>% filter(Species %in% species$Species)
+    
+
+DT::datatable(
+  bioprojects,
+  selection = "single",
+  rownames = FALSE,
+  filter = 'top',
+  options = list(
+    lengthMenu = c(10, 20, 30, 40),
+    pageLength = 10,
+    scrollX = TRUE,
+    scrollY = TRUE,
+    columnDefs = list(
+      list(width = '90px', targets = 2),
+      list(width = '90px', targets = 3)
+    )
+  )
+) %>%
+  DT::formatStyle(columns = 1:4, 
+                  fontSize = '13px') 
+
+```
