@@ -335,6 +335,8 @@ x
 
 # Plant transcriptomes
 
+**NOTE**: Here, we only extracted information on available RNA-seq data for plant genomes with >50% Complete BUSCOs.
+
 ## Row
 
 ### Frequency of RNA-seq samples on NCBI's SRA per family
@@ -409,6 +411,8 @@ DT::datatable(
 
 # RNA-seq bioprojects
 
+**NOTE**: Here, we only extracted information on available RNA-seq data for plant genomes with >50% Complete BUSCOs.
+
 ## Row
 
 ### RNA-seq bioprojects available on NCBI's Sequence Read Archive
@@ -464,7 +468,14 @@ DT::datatable(
     )
   )
 ) %>%
-  DT::formatStyle(columns = 1:4, 
+  DT::formatStyle(columns = 1:7, 
                   fontSize = '13px') 
 
 ```
+
+# About
+
+The plant genome data used in the **Overview** and **Polyploid genomes** tabs were retrieved from [Marks, R. A., Hotaling, S., Frandsen, P. B., & VanBuren, R. (2021).](https://doi.org/10.1038/s41477-021-01031-8). The plant transcriptome data used in the **Plant transcriptomes** and **RNA-seq bioprojects** were obtained using R code available at [https://github.com/almeidasilvaf/plant_transcriptomes](https://github.com/almeidasilvaf/plant_transcriptomes).
+
+
+
