@@ -418,39 +418,8 @@ DT::datatable(
 ### RNA-seq bioprojects available on NCBI's Sequence Read Archive
 
 ```{r sra_bioprojects}
-brassicaceae_path <- paste0(tempdir(), "/brassicaceae.rda")
-poaceae_path <- paste0(tempdir(), "/poaceae.rda")
-fabaceae_path <- paste0(tempdir(), "/fabaceae.rda")
-otherfam_path <- paste0(tempdir(), "/otherfam.rda")
-
-# Download files in tempdir()
-download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/brassicaceae_projects.rda?raw=true", destfile = brassicaceae_path)
-download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/poaceae_projects.rda?raw=true", destfile = poaceae_path)
-download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/fabaceae_projects.rda?raw=true", destfile = fabaceae_path)
-download.file("https://github.com/almeidasilvaf/plant_transcriptomes/blob/master/data/otherfam_projects.rda?raw=true", destfile = otherfam_path)
-
-# Read files
-load(brassicaceae_path)
-load(fabaceae_path)
-load(poaceae_path)
-load(otherfam_path)
-
-bioprojects <- bind_rows(
-    brassicaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
-    poaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
-    fabaceae_projects %>% dplyr::distinct(., .keep_all = TRUE),
-    otherfam_projects %>% dplyr::distinct(., .keep_all = TRUE),
-) %>%
-    mutate(BioProject = as.factor(BioProject),
-           N = as.numeric(N),
-           Pubmed = as.factor(Pubmed),
-           Species = as.factor(Species))
-
-species <- species_table %>% 
-    filter(Complete_BUSCOs >= 80) 
-
-bioprojects_filtered <- bioprojects %>% filter(Species %in% species$Species)
-    
+load(here::here("data", "projects.rda"))
+bioprojects <- projects
 
 DT::datatable(
   bioprojects,
