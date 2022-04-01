@@ -23,9 +23,9 @@ library(tidyverse)
 library(ggiraph)
 library(DT)
 metadata <- readr::read_tsv(
-    here("data", "nature_plants_data.txt"), show_col_types = FALSE
+    here("data", "genome_info_table.tsv"), show_col_types = FALSE
 )
-options(htmlwidgets.TOJSON_ARGS = list(na = 'string'))
+#options(htmlwidgets.TOJSON_ARGS = list(na = 'null'))
 ```
 
 # Overview
@@ -34,75 +34,97 @@ options(htmlwidgets.TOJSON_ARGS = list(na = 'string'))
 
 ### Number of species with sequenced genomes per taxa {data-width=600}
 
-```{r species_per_taxa, dpi = 200, fig.width = 9, fig.height = 9.5}
+```{r species_per_taxa, dpi = 200, fig.width = 9.5, fig.height = 10}
 cols <- ggsci::pal_aaas()(10)
 count_taxa <- function(metadata = NULL, taxon = NULL) {
-  count_df <- metadata %>%
-    count(.data[[taxon]]) %>%
-    drop_na() %>%
-    pivot_longer(.data[[taxon]])
-  names(count_df) <- c("n", "taxon", "name")
-  return(count_df)
+    count_df <- metadata %>%
+        group_by(.data[[taxon]]) %>%
+        summarise(N = sum(N_genomes)) %>%
+        drop_na() %>%
+        pivot_longer(.data[[taxon]])
+    names(count_df) <- c("n", "taxon", "name")
+    return(count_df)
 }
 freqs <- bind_rows(
-  count_taxa(metadata, "Phylum"),
-  count_taxa(metadata, "Class"),
-  count_taxa(metadata, "Order"),
-  count_taxa(metadata, "Family"),
-  count_taxa(metadata, "Genus")
+    count_taxa(metadata, "Phylum"),
+    count_taxa(metadata, "Class"),
+    count_taxa(metadata, "Order"),
+    count_taxa(metadata, "Family")
 )
 
 size <- 3.3
 
+#----Phylum---------------------------------------------------------------------
+phylum_max <- plyr::round_any(
+    max(filter(freqs, taxon == "Phylum")$n), 1500, f = ceiling
+)
+    
 p_phylum <- freqs %>%
-  dplyr::filter(taxon == "Phylum") %>%
-  ggplot(., aes(x = n, y = reorder(name, n))) +
-  geom_col(fill = cols[1], color = "grey10") +
-  geom_text(aes(label = n), hjust = -0.3, size = size) +
-  xlim(0, 1000) +
-  labs(x = "", y = "", title  = "Phylum") +
-  theme_bw()
+    dplyr::filter(taxon == "Phylum") %>%
+    ggplot(., aes(x = n, y = reorder(name, n))) +
+    geom_col(fill = cols[1], color = "grey10") +
+    geom_text(aes(label = n), hjust = -0.3, size = size) +
+    xlim(0, phylum_max) +
+    labs(x = "", y = "", title  = "Phylum") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#----Class----------------------------------------------------------------------
+class_max <- plyr::round_any(
+    max(filter(freqs, taxon == "Class")$n), 3000, f = ceiling
+)
 p_class <- freqs %>%
-  dplyr::filter(taxon == "Class") %>%
-  mutate(name = str_replace(name, "Marchantiopsida.*", "Marchantiopsida")) %>%
-  ggplot(., aes(x = n, y = reorder(name, n))) +
-  geom_col(fill = cols[2], color = "grey10") +
-  geom_text(aes(label = n), hjust = -0.3, size = size) +
-  xlim(0, 1000) +
-  labs(x = "", y = "", title = "Class") +
-  theme_bw()
+    dplyr::filter(taxon == "Class") %>%
+    mutate(name = str_replace(name, "Marchantiopsida.*", "Marchantiopsida")) %>%
+    ggplot(., aes(x = n, y = reorder(name, n))) +
+    geom_col(fill = cols[2], color = "grey10") +
+    geom_text(aes(label = n), hjust = -0.3, size = size) +
+    xlim(0, class_max) +
+    labs(x = "", y = "", title = "Class") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#----Order----------------------------------------------------------------------
+order_max <- plyr::round_any(
+    max(filter(freqs, taxon == "Order")$n), 500, f = ceiling
+)
 
 p_order <- freqs %>%
-  dplyr::filter(taxon == "Order" & n > 1) %>%
-  ggplot(., aes(x = n, y = reorder(name, n))) +
-  geom_col(fill = cols[3], color = "grey10") +
-  geom_text(aes(label = n), hjust = -0.3, size = size) +
-  xlim(0, 100) +
-  labs(
-    x = "", y = "",
-    title = "Order",
-    subtitle = "2 species minimum"
-  ) +
-  theme_bw()
+    dplyr::filter(taxon == "Order" & n > 2) %>%
+    ggplot(., aes(x = n, y = reorder(name, n))) +
+    geom_col(fill = cols[3], color = "grey10") +
+    geom_text(aes(label = n), hjust = -0.3, size = size) +
+    xlim(0, order_max) +
+    labs(
+        x = "", y = "",
+        title = "Order",
+        subtitle = "3 species minimum"
+    ) +
+    theme_bw()
+
+#----Family---------------------------------------------------------------------
+family_max <- plyr::round_any(
+    max(filter(freqs, taxon == "Family")$n), 500, f = ceiling
+)
 
 p_family <- freqs %>%
-  dplyr::filter(taxon == "Family" & n > 1) %>%
-  ggplot(., aes(x = n, y = reorder(name, n))) +
-  geom_col(fill = cols[4], color = "grey10") +
-  geom_text(aes(label = n), hjust = -0.3, size = size) +
-  xlim(0, 100) +
-  labs(
-    x = "", y = "",
-    title = "Family",
-    subtitle = "2 species minimum"
-  ) +
-  theme_bw()
+    dplyr::filter(taxon == "Family" & n > 2) %>%
+    ggplot(., aes(x = n, y = reorder(name, n))) +
+    geom_col(fill = cols[4], color = "grey10") +
+    geom_text(aes(label = n), hjust = -0.3, size = size) +
+    xlim(0, family_max) +
+    labs(
+        x = "", y = "",
+        title = "Family",
+        subtitle = "3 species minimum"
+    ) +
+    theme_bw()
 
 taxa_freqs <- patchwork::wrap_plots(
-  patchwork::wrap_plots(p_phylum, p_class, heights = c(1, 3)),
-  p_order, p_family,
-  ncol = 3, widths = c(1, 1.5)
+    patchwork::wrap_plots(p_phylum, p_class, heights = c(1, 3)),
+    p_order, p_family,
+    ncol = 3, widths = c(1, 1.5)
 )
 taxa_freqs
 ```
@@ -110,134 +132,152 @@ taxa_freqs
 ### Complete BUSCOs across families {data-width=400}
 
 ```{r buscos_families, dpi = 300, fig.height = 8, fig.width = 4}
+# family_1genome <- metadata %>%
+#     dplyr::rename(Complete_BUSCO = `BUSCO % complete (combined)`) %>%
+#     dplyr::select(Family, Complete_BUSCO) %>%
+#     drop_na() %>%
+#     count(Family) %>%
+#     filter(n < 2)
+# 
 family_1genome <- metadata %>%
-  dplyr::rename(Complete_BUSCO = `BUSCO % complete (combined)`) %>%
-  dplyr::select(Family, Complete_BUSCO) %>%
-  drop_na() %>%
-  count(Family) %>%
-  filter(n < 2)
-  
+    dplyr::select(Family, BUSCO) %>%
+    drop_na() %>%
+    count(Family) %>%
+    filter(n < 2)
+
+
+check_outlier <- function(v, coef=1.5) {
+  quantiles <- quantile(v,probs=c(0.25,0.75))
+  IQR <- quantiles[2]-quantiles[1]
+  res <- v < (quantiles[1]-coef*IQR)|v > (quantiles[2]+coef*IQR)
+  return(res)
+}
 
 busco_data <- metadata %>% 
-  dplyr::rename(Complete_BUSCO = `BUSCO % complete (combined)`) %>%
-  dplyr::select(Family, Complete_BUSCO) %>%
-  filter(!Family %in% family_1genome$Family) %>%
-  drop_na() %>%
-  mutate(Complete_BUSCO = str_replace_all(
-    Complete_BUSCO, 
-    c("," = "\\.",
-      "%" = ""
-    ))
-  ) %>%
-  mutate(Complete_BUSCO = as.numeric(Complete_BUSCO)) %>%
-  group_by(Family) %>%
-  mutate(mean_busco = mean(Complete_BUSCO)) %>%
-  ungroup()
+    dplyr::select(Family, BUSCO, Species) %>%
+    filter(!Family %in% family_1genome$Family) %>%
+    drop_na() %>%
+    group_by(Family) %>%
+    mutate(mean_busco = mean(BUSCO)) %>%
+    mutate(is_outlier = ifelse(check_outlier(BUSCO), 
+                               TRUE, as.numeric(NA))) %>%
+    ungroup()
 
 mean_busco <- mean(busco_data$mean_busco)
 
-p_busco <- busco_data %>%
-  ggplot(., aes(y = reorder(Family, mean_busco), x = Complete_BUSCO)) +
-  geom_boxplot(
-    width = .25, 
-    outlier.color = "brown"
-  ) +
-  geom_point(
-    size = 1.3,
-    alpha = .3,
-    position = position_jitter(
-      seed = 1, width = .1
-    )
-  ) + 
-  geom_vline(xintercept = mean_busco, color = "dodgerblue3", linetype = "dashed") +
-  annotate("text", 
-           x = mean_busco - 15, y = "Linaceae",
-           label = "Mean", 
-           color = "dodgerblue4", fontface = "bold", size = 3.5
-  ) +
-  annotate(
-    geom = "curve",
-    x = mean_busco - 15, y = 56,
-    xend = mean_busco - 2, yend = 54,
-    curvature = .3, arrow = arrow(length = unit(2, "mm")),
-    color = "dodgerblue4"
-  ) +
-  annotate(
-    "text", 
-    x = 20, y = "Campanulaceae",
-    label = "Outliers", 
-    color = "brown", fontface = "bold", size = 3.5
-  ) +
-  annotate(
-    geom = "curve",
-    x = c(18, 22), y = c(52, 52),
-    xend = c(3, 13.5), yend = c(49, 37.5),
-    curvature = -0.2, arrow = arrow(length = unit(2, "mm")),
-    color = "brown"
-  ) +
-  theme_bw() +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "", y = "")
+## Static version
+# p_busco <- busco_data %>%
+#     ggplot(., aes(y = reorder(Family, mean_busco), x = Complete_BUSCO)) +
+#     geom_boxplot(
+#         width = .25, 
+#         outlier.color = "brown"
+#     ) +
+#     geom_point(
+#         size = 1.3,
+#         alpha = .3,
+#         position = position_jitter(
+#             seed = 1, width = .1
+#         )
+#     ) + 
+#     geom_vline(xintercept = mean_busco, color = "dodgerblue3", linetype = "dashed") +
+#     annotate("text", 
+#              x = mean_busco - 15, y = "Linaceae",
+#              label = "Mean", 
+#              color = "dodgerblue4", fontface = "bold", size = 3.5
+#     ) +
+#     annotate(
+#         geom = "curve",
+#         x = mean_busco - 15, y = 56,
+#         xend = mean_busco - 2, yend = 54,
+#         curvature = .3, arrow = arrow(length = unit(2, "mm")),
+#         color = "dodgerblue4"
+#     ) +
+#     annotate(
+#         "text", 
+#         x = 20, y = "Campanulaceae",
+#         label = "Outliers", 
+#         color = "brown", fontface = "bold", size = 3.5
+#     ) +
+#     annotate(
+#         geom = "curve",
+#         x = c(18, 22), y = c(52, 52),
+#         xend = c(3, 13.5), yend = c(49, 37.5),
+#         curvature = -0.2, arrow = arrow(length = unit(2, "mm")),
+#         color = "brown"
+#     ) +
+#     theme_bw() +
+#     scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+#     labs(x = "", y = "")
+# 
+# p_busco
 
-p_busco
+## Interactive version
+library(plotly)
+p_busco_int <- busco_data %>%
+    mutate(Family = as.factor(Family)) %>%
+    ggplot(., aes(x = reorder(Family, mean_busco), y = BUSCO)) +
+    geom_boxplot(width = .25) +
+    geom_point(data = busco_data %>% filter(is_outlier == TRUE),
+               aes(group = Family, text = Species), 
+               size = 1.3, color = "brown") +
+    geom_hline(yintercept = mean_busco, color = "dodgerblue3", 
+               linetype = "dashed") +
+    annotate("text",
+             y = mean_busco - 5, x = "Linaceae",
+             label = "Mean",
+             color = "dodgerblue4", fontface = "bold", size = 3.5
+    ) +
+    theme_bw() +
+    scale_y_continuous(breaks = seq(0, 200, 10),
+                       labels = scales::percent_format(scale = 1)) +
+    labs(x = "", y = "") +
+    coord_flip()
+
+int_busco <- plotly::ggplotly(p_busco_int, tooltip = "text")
+for (i in 1:length(int_busco$x$data)) {
+    if (int_busco$x$data[[i]]$type=="box"){
+        int_busco$x$data[[i]]$marker$opacity = 0  
+        int_busco$x$data[[i]]$hoverinfo = "none"
+    }
+}
+int_busco
 ```
 
 ## Row 2
 
 ### Species-level information {data-width=900}
 
-```{r}
+```{r species_table}
 species_table <- metadata %>%
-  mutate(Species = str_c(Genus, species, sep = " ")) %>%
-  dplyr::select(
-    Family, Species, `Number of genomes for the species`,
-    `BUSCO % complete (combined)`, `Estimated genome size`,
-    `Sequencing technology`, `Ploidy number`, `Domestication status`
-    ) %>%
-  dplyr::rename(
-    N_genomes = `Number of genomes for the species`,
-    Complete_BUSCOs = `BUSCO % complete (combined)`,
-    Genome_size = `Estimated genome size`,
-    Sequencing_technology = `Sequencing technology`,
-    Ploidy = `Ploidy number`,
-    Domestication = `Domestication status`
-    ) %>%
-  mutate(Complete_BUSCOs = str_replace_all(
-    Complete_BUSCOs, 
-    c("," = "\\.",
-      "%" = ""
-    ))
-  ) %>%
-  mutate(Complete_BUSCOs = as.numeric(Complete_BUSCOs)) %>%
-  mutate(Genome_size = Genome_size / 10^6) %>%
-  mutate(Ploidy = as.factor(str_c(Ploidy, "n", sep = ""))) %>%
-  arrange(Family, -Complete_BUSCOs) %>%
-  mutate(Family = as.factor(Family)) %>%
-  mutate(Domestication = as.factor(Domestication))
-  
+    select(-c(Phylum, Class, Order)) %>%
+    mutate(Family = as.factor(Family)) %>%
+    mutate(Species = as.factor(Species)) %>%
+    mutate(Ploidy = as.factor(Ploidy)) %>%
+    arrange(Family, BUSCO)
+
 DT::datatable(
-  species_table,
-  colnames = c("Family", "Species", "N genomes", "Complete BUSCOs (%)",
-               "Genome size (Mb)", "Technology", "Ploidy", "Domestication"),
-  selection = "single",
-  rownames = FALSE,
-  filter = 'top',
-  options = list(
-    lengthMenu = c(10, 20, 30, 40),
-    pageLength = 10,
-    scrollX = TRUE,
-    scrollY = TRUE,
-    columnDefs = list(
-      list(width = '50px', targets = 2),
-      list(width = '50px', targets = 3),
-      list(width = '50px', targets = 4),
-      list(width = '50px', targets = 6)
+    species_table,
+    colnames = c("Family", "Species", "N genomes", "Complete BUSCOs (%)",
+                 "Genome size (Mb)", "Technology", "Ploidy"),
+    selection = "single",
+    rownames = FALSE,
+    filter = 'top',
+    options = list(
+        lengthMenu = c(10, 20, 30, 40),
+        pageLength = 10,
+        scrollX = TRUE,
+        scrollY = TRUE,
+        columnDefs = list(
+            list(width = '50px', targets = 2),
+            list(width = '50px', targets = 3),
+            list(width = '50px', targets = 4),
+            list(width = '50px', targets = 6)
+        )
     )
-  )
 ) %>%
-  DT::formatStyle(columns = 1:8, 
-                  fontSize = '13px') %>%
-  DT::formatRound(5, 1)
+    DT::formatStyle(columns = 1:8, 
+                    fontSize = '13px') %>%
+    DT::formatRound(5, 1)
 ```
 
 # Polyploid genomes
@@ -248,57 +288,68 @@ DT::datatable(
 
 ```{r genomes_and_ploidy, dpi = 200, fig.width = 7, fig.height=5}
 triploids <- metadata %>% 
-  filter(`Ploidy number` == 3) %>%
-  mutate(Species = str_c(Genus, species, sep = " ")) %>%
-  dplyr::select(Species)
-  
+    filter(Ploidy == 3) %>%
+    dplyr::select(Species)
+
 tetraploids <- metadata %>% 
-  filter(`Ploidy number` == 4) %>%
-  mutate(Species = str_c(Genus, species, sep = " ")) %>%
-  dplyr::select(Species)
+    filter(Ploidy == 4) %>%
+    dplyr::select(Species)
 
 hexaploids <- metadata %>% 
-  filter(`Ploidy number` == 6) %>%
-  mutate(Species = str_c(Genus, species, sep = " ")) %>%
-  dplyr::select(Species)
+    filter(Ploidy == 6) %>%
+    dplyr::select(Species)
 
 octaploids <- metadata %>% 
-  filter(`Ploidy number` == 8) %>%
-  mutate(Species = str_c(Genus, species, sep = " ")) %>%
-  dplyr::select(Species)
+    filter(Ploidy == 8) %>%
+    dplyr::select(Species)
+
+chunk2 <- function(x,n) split(x, cut(seq_along(x), n, labels = FALSE)) 
+names2str <- function(names = NULL) {
+    chunks <- chunk2(names, 2)
+    strlist <- lapply(chunks, function(x) {
+        y <- paste(x, collapse = ", ")
+        y <- paste0(y, ",", "\n")
+        return(y)
+    })
+    str <- do.call(paste0, strlist)
+    str <- gsub(",\\\n$", "", str)
+    return(str)
+}
+octa_annot <- names2str(octaploids$Species)
+hexa_annot <- names2str(hexaploids$Species)
+
 
 cols <- ggsci::pal_jama()(5)
 p_ploidy <- metadata %>%
-  count(`Ploidy number`) %>%
-  drop_na() %>%
-  mutate(`Ploidy number` = str_c(`Ploidy number`, "n", sep = "")) %>%
-  ggplot(., aes(y = `Ploidy number`, x = n)) +
-  geom_col(aes(fill = `Ploidy number`), color = "black",
-           show.legend = FALSE) +
-  ggsci::scale_fill_jama() +
-  geom_text(aes(label = n), hjust = -0.3) +
-  labs(y = "", x = "Species frequency") +
-  xlim(0, 250) +
-  theme_bw() +
-  annotate(
-    "text", 
-    x = 130, y = "8n",
-    label = knitr::combine_words(octaploids$Species),
-    color = colorspace::darken(cols[5], 0.5), fontface = "bold.italic"
-  ) +
-  annotate(
-    "text", 
-    x = 95, y = "6n",
-    label = "Dioscorea cayenensis, Actinidia eriantha,\nTriticum aestivum, and Sequoia sempervirens",
-    color = colorspace::darken(cols[4], 0.5), fontface = "bold.italic"
-  ) +
-  annotate(
-    "text", 
-    x = 45, y = "3n",
-    label = knitr::combine_words(triploids$Species), 
-    color = colorspace::darken(cols[2], 0.5), fontface = "bold.italic"
-  )
-  
+    count(Ploidy) %>%
+    drop_na() %>%
+    mutate(Ploidy = str_c(Ploidy, "n", sep = "")) %>%
+    ggplot(., aes(y = Ploidy, x = n)) +
+    geom_col(aes(fill = Ploidy), color = "black",
+             show.legend = FALSE) +
+    ggsci::scale_fill_jama() +
+    geom_text(aes(label = n), hjust = -0.3) +
+    labs(y = "", x = "Species frequency") +
+    xlim(0, 250) +
+    theme_bw() +
+    annotate(
+        "text", 
+        x = 130, y = "8n",
+        label = octa_annot,
+        color = colorspace::darken(cols[5], 0.5), fontface = "bold.italic"
+    ) +
+    annotate(
+        "text", 
+        x = 95, y = "6n",
+        label = hexa_annot,
+        color = colorspace::darken(cols[4], 0.5), fontface = "bold.italic"
+    ) +
+    annotate(
+        "text", 
+        x = 45, y = "3n",
+        label = knitr::combine_words(triploids$Species), 
+        color = colorspace::darken(cols[2], 0.5), fontface = "bold.italic"
+    )
 
 p_ploidy
 ```
@@ -308,28 +359,32 @@ p_ploidy
 
 ```{r tetraploids_and_families, dpi = 200}
 tetra_families_and_species <- metadata %>%
-    filter(`Ploidy number` == 4) %>%
-    mutate(Species = str_c(Genus, species, sep = " ")) %>%
+    filter(Ploidy == 4) %>%
     group_by(Family) %>%
     summarise(Inc_species = str_c(Species, collapse = "\n")) %>%
     ungroup()
 
-p <- metadata %>%
-  filter(`Ploidy number` == 4) %>%
-  count(Family) %>%
-  inner_join(., tetra_families_and_species) %>%
-  ggplot(., aes(x = reorder(`Family`, n), y = n,
-                tooltip = Inc_species,
-                data_id = reorder(`Family`, n))) +
-  geom_col_interactive(fill = "gray40", color = "black") +
-  geom_text(aes(label = n), hjust = -0.3) +
-  labs(y = "Species frequency", x = "") +
-  #ylim(0, 10) +
-  theme_bw() +
-  coord_flip()
+# Data to plot
+p_tetra_data <- metadata %>%
+    filter(Ploidy == 4) %>%
+    count(Family) %>%
+    inner_join(., tetra_families_and_species)
 
-x <- ggiraph::ggiraph(code = {print(p)}, height_svg = 6.5)
-x
+# xlim - max
+xmax_tetra <- plyr::round_any(max(p_tetra_data$n), 10, f = ceiling)
+
+p_tetraploids <- ggplot(p_tetra_data, 
+                        aes(x = reorder(Family, n), y = n)) +
+    geom_bar(aes(text = Inc_species, text2 = n),
+             stat = "identity", fill = "gray40", color = "black") +
+    labs(y = "Species frequency", x = "") +
+    scale_y_continuous(breaks = seq(0, xmax_tetra, by = 2),
+                       limits = c(0, xmax_tetra)) +
+    theme_bw() +
+    coord_flip()
+
+tetraploids_int <- plotly::ggplotly(p_tetraploids, tooltip = c("text", "text2"))
+tetraploids_int
 ```
 
 
@@ -343,23 +398,26 @@ x
 
 ```{r rnasamples_per_family, dpi = 200, fig.width = 6, fig.height = 9.5}
 metadata_rnaseq <- readr::read_tsv(
-  "https://raw.githubusercontent.com/almeidasilvaf/plant_transcriptomes/master/data/species_info.tsv",
-  show_col_types = FALSE
+    "https://raw.githubusercontent.com/almeidasilvaf/plant_transcriptomes/master/data/species_info.tsv",
+    show_col_types = FALSE
 )
 
 family_rnaseq <- metadata_rnaseq %>%
-  group_by(Family) %>%
-  summarise(N = sum(RNAseq_samples)) %>%
-  filter(N >= 10) %>%
-  drop_na() %>%
-  ggplot(., aes(x = N, y = reorder(Family, N))) +
-  geom_col(color = "grey20", fill = cols[1]) +
-  geom_text(aes(label = N), hjust = -0.1, size = size) +
-  labs(x = "Number of RNA-seq samples", y = "") +
-  xlim(0, 70000) +
-  theme_bw()
+    group_by(Family) %>%
+    summarise(N = sum(RNAseq_samples)) %>%
+    filter(N >= 10) %>%
+    drop_na()
 
-family_rnaseq
+xmax <- plyr::round_any(max(family_rnaseq$N), 1000, f = ceiling)
+p_family_rnaseq <- ggplot(family_rnaseq, 
+                          aes(x = N, y = reorder(Family, N))) +
+    geom_col(color = "grey20", fill = cols[1]) +
+    geom_text(aes(label = N), hjust = -0.1, size = size) +
+    labs(x = "Number of RNA-seq samples", y = "") +
+    xlim(0, xmax + 10^4) +
+    theme_bw()
+
+p_family_rnaseq
 ```
 
 ### Top 50 species in number of RNA-seq samples
@@ -367,46 +425,81 @@ family_rnaseq
 ```{r top20_rnaseq, dpi = 200, fig.width = 6, fig.height = 9.5}
 cols <- ggsci::pal_aaas()(5)
 top20 <- metadata_rnaseq %>%
-  arrange(-RNAseq_samples) %>%
-  slice_head(n = 50) %>%
-  ggplot(., aes(x = RNAseq_samples, y = reorder(Species, RNAseq_samples))) +
-  geom_col(color = "grey20", fill = cols[3]) +
-  geom_text(aes(label = RNAseq_samples), hjust = -0.1, size = size) +
-  labs(x = "Number of RNA-seq samples", y = "") +
-  xlim(0, 55000) +
-  theme_bw()
+    arrange(-RNAseq_samples) %>%
+    slice_head(n = 50)
 
-top20
+xmax2 <- plyr::round_any(max(top20$RNAseq_samples), 1000, f = ceiling)
+p_top20 <- ggplot(top20, 
+                  aes(x = RNAseq_samples, y = reorder(Species, RNAseq_samples))) +
+    geom_col(color = "grey20", fill = cols[3]) +
+    geom_text(aes(label = RNAseq_samples), hjust = -0.1, size = size) +
+    labs(x = "Number of RNA-seq samples", y = "") +
+    xlim(0, xmax2 + 10^4) +
+    theme_bw()
+
+p_top20
 ```
 
-## Row 2
+## Row 2 {data-height=700}
+
+### Global distribution of RNA-seq samples {data-width=900}
+
+```{r map}
+library(sf)
+world_map <- map_data("world")
+
+countries <- unique(world_map$region)
+
+p_map_data <- readr::read_tsv(here::here("data", "bioproject_info.tsv"),
+                              show_col_types = FALSE) %>%
+    mutate(region = str_replace_all(Origin, "\\:.*", "")) %>%
+    drop_na(., region) %>%
+    filter(region %in% countries) %>%
+    dplyr::count(region) %>%
+    right_join(., world_map) %>%
+    rename(N = n, Country = region) %>%
+    mutate(logN = log2(N))
+    
+
+p_map <- ggplot(p_map_data, aes(x = long, y = lat, group = group,
+                                label1 = Country, label2 = N)) +
+    geom_polygon(aes(fill = logN), color = "black", size = 0.05) +
+    labs(fill = "log2 N") +
+    theme_void() +
+    scale_fill_gradient(low = "#DCEDC8", high = "#33691E")
+
+p_map_int <- plotly::ggplotly(p_map, tooltip = c("label1", "label2"))
+p_map_int
+```
+
+## Row 3
 
 ### RNA-seq samples per species {data-width=900}
 
 ```{r rnaseq_per_species}
 rnaseq_species_table <- metadata_rnaseq %>%
-  mutate(Family = as.factor(Family)) %>%
-  mutate(Species = as.factor(Species))
+    mutate(Family = as.factor(Family)) %>%
+    mutate(Species = as.factor(Species))
 
 DT::datatable(
-  rnaseq_species_table,
-  colnames = c("Family", "Species", "Complete BUSCOs (%)", "RNA-seq samples"),
-  selection = "single",
-  rownames = FALSE,
-  filter = 'top',
-  options = list(
-    lengthMenu = c(10, 20, 30, 40),
-    pageLength = 10,
-    scrollX = TRUE,
-    scrollY = TRUE,
-    columnDefs = list(
-      list(width = '90px', targets = 2),
-      list(width = '90px', targets = 3)
+    rnaseq_species_table,
+    colnames = c("Family", "Species", "Complete BUSCOs (%)", "RNA-seq samples"),
+    selection = "single",
+    rownames = FALSE,
+    filter = 'top',
+    options = list(
+        lengthMenu = c(10, 20, 30, 40),
+        pageLength = 10,
+        scrollX = TRUE,
+        scrollY = TRUE,
+        columnDefs = list(
+            list(width = '90px', targets = 2),
+            list(width = '90px', targets = 3)
+        )
     )
-  )
 ) %>%
-  DT::formatStyle(columns = 1:4, 
-                  fontSize = '13px') 
+    DT::formatStyle(columns = 1:4, 
+                    fontSize = '13px') 
 ```
 
 # RNA-seq bioprojects
@@ -422,25 +515,26 @@ load(here::here("data", "projects.rda"))
 bioprojects <- projects
 
 DT::datatable(
-  bioprojects,
-  selection = "single",
-  rownames = FALSE,
-  filter = 'top',
-  options = list(
-    lengthMenu = c(10, 20, 30, 40),
-    pageLength = 10,
-    scrollX = TRUE,
-    scrollY = TRUE,
-    columnDefs = list(
-      list(width = '90px', targets = 2),
-      list(width = '90px', targets = 3)
+    bioprojects,
+    selection = "single",
+    rownames = FALSE,
+    filter = 'top',
+    options = list(
+        lengthMenu = c(10, 20, 30, 40),
+        pageLength = 10,
+        scrollX = TRUE,
+        scrollY = TRUE,
+        columnDefs = list(
+            list(width = '90px', targets = 2),
+            list(width = '90px', targets = 3)
+        )
     )
-  )
 ) %>%
-  DT::formatStyle(columns = 1:7, 
-                  fontSize = '13px') 
+    DT::formatStyle(columns = 1:7, 
+                    fontSize = '13px') 
 
 ```
+
 
 # About
 
