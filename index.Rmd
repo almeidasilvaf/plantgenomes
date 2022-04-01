@@ -442,7 +442,7 @@ p_top20
 
 ## Row 2 {data-height=700}
 
-### Global distribution of RNA-seq samples {data-width=900}
+### Global distribution of RNA-seq BioProjects {data-width=900}
 
 ```{r map}
 library(sf)
